@@ -1,37 +1,32 @@
 package Test;
 
-import App.FileHandling;
+import App.FileHandler;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileHandlingTest {
-    FileHandling fileHandlerObject{}
+    FileHandler fileHandlerObject = new FileHandler();
 
     // TESTS FOR READFILE
-    final String testFileName = "test.java";
+    final String testFileName = "./src/Test/test.txt";
     final int testFileLineCount = 9;
     final String testFileFirstLine = "package Test.Data;";
 
     @Test
-    void testReadFileNoError(){
-
-    }
-
-    @Test
     void testReadFileCorrectFirstLine(){
-
+        List<String> result = fileHandlerObject.readFile(testFileName);
+        assertTrue(result.get(0).equals(testFileFirstLine));
     }
 
     @Test
     void testReadFileCorrectLineCount(){
-
+        List<String> result = fileHandlerObject.readFile(testFileName);
+        assertTrue(result.size() == testFileLineCount);
     }
+    
+
 
 }
