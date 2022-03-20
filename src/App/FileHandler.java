@@ -24,7 +24,7 @@ public class FileHandler {
         return fileLines;
     }
 
-    public List<String> removeHeader(List<String> file){
+    public static List<String> parseTests(List<String> file){
         return null;
     }
 

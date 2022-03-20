@@ -13,7 +13,12 @@ public class FileHandlingTestData {
     public static final String testParseTestsFilePath = "./src/Test/FileHandlingTest/Data/parseTests/testSuiteData.txt";
     //for larger pieces of data, ive put them inside get methods for ease of reading.
     public static List<String> getCorrectlyParsedFirstTest(){
-        final List<String> correctlyParsedFirstTest = Arrays.asList(
+        final List<String> finalTestSuiteData = getTestSuiteData();
+        return finalTestSuiteData.subList(12,18);
+    }
+    public static List<String> getTestSuiteData(){
+        // Based on test suite generated with 1 second budget
+        return Arrays.asList(
                 "package org.apache.commons.cli;",
                 "",
                 "import org.junit.FixMethodOrder;",
@@ -216,12 +221,6 @@ public class FileHandlingTestData {
                 "}",
                 ""
         );
-        return correctlyParsedFirstTest;
-    }
-    public static List<String> getTestSuiteData(){
-        return null;
     };
-
-
 
 }

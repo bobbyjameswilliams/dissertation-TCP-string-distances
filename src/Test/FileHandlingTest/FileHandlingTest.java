@@ -28,7 +28,9 @@ class FileHandlingTest {
     //TESTS FOR parseTests()
     @Test
     void testParseTestFirstTest(){
-
+        List<String> testSuiteData = getTestSuiteData();
+        List<String> correctlyParsedFirstTest = getCorrectlyParsedFirstTest();
+        FileHandler.parseTests(testSuiteData);
     }
 
 
