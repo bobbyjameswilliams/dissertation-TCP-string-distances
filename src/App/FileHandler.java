@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class FileHandler {
-    public List<String> readFile(String fileName){
+    public static List<String> readFile(String fileName){
         List<String> fileLines = new ArrayList<String>();
         try {
             File myObj = new File(fileName);
@@ -24,5 +24,8 @@ public class FileHandler {
         return fileLines;
     }
 
+    public List<String> removeHeader(List<String> file){
+        return null;
+    }
 
 }
