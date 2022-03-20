@@ -26,7 +26,7 @@ class FileHandlingTest {
         List<String> result = fileHandlerObject.readFile(testFileName);
         assertTrue(result.size() == testFileLineCount);
     }
-    
+
 
 
 }
