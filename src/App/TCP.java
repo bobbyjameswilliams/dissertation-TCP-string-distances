@@ -7,7 +7,8 @@ import App.FileHandler;
 
 public class TCP {
     public static void main(String[] args) {
-        //List<String> x = FileHandler.re
+        List<String> x = FileHandler.readFile("./src/Test/FileHandlingTest/Data/parseTests/testSuiteTestData.txt");
+        System.out.println("");
     }
 
 
