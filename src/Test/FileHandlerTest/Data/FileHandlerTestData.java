@@ -1,23 +1,33 @@
-package Test.FileHandlingTest.Data;
+package Test.FileHandlerTest.Data;
+
+import App.FileHandler;
+import com.sun.xml.internal.fastinfoset.util.CharArray;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class FileHandlingTestData {
+/**
+ * Test suite data that is too large is stored here for use in FileHandlerTest
+ */
+public class FileHandlerTestData {
     // TEST DATA FOR readFile()
-    public static final String testReadFilePath = "./src/Test/FileHandlingTest/Data/readFile/test.txt";
+    public static final String testReadFilePath = "./src/Test/FileHandlerTest/Data/readFile/test.txt";
     public static final int testReadFileLineCount = 9;
     public static final String testReadFileFirstLine = "package Test.Data;";
 
     //TEST DATA FOR parseTests()
-    public static final String testParseTestsFilePath = "./src/Test/FileHandlingTest/Data/parseTests/testSuiteData.txt";
-    //for larger pieces of data, ive put them inside get methods for ease of reading.
-    public static List<String> getCorrectlyParsedFirstTest(){
-        final List<String> finalTestSuiteData = getTestSuiteData();
-        return finalTestSuiteData.subList(12,18);
+    public static final String testParseTestsFilePath = "./src/Test/FileHandlerTest/Data/parseTests/testSuiteData.txt";
+
+    public static String getCorrectlyParsedFirstTest(){
+        final List<String> finalTestSuiteData = getTestSuiteDataInLines();
+        final List<String> sublist = finalTestSuiteData.subList(13,18);
+        //TODO Get this data to be static do that these tests dont rely on the function below
+        return FileHandler.linesToString(sublist);
     }
-    public static List<String> getTestSuiteData(){
+
+    public static List<String> getTestSuiteDataInLines(){
         // Based on test suite generated with 1 second budget
+        // This is how the data will look once it has been read in
         return Arrays.asList(
                 "package org.apache.commons.cli;",
                 "",
@@ -221,6 +231,12 @@ public class FileHandlingTestData {
                 "}",
                 ""
         );
+    };
+
+    public static String getTestSuiteDataStringDelimited(){
+        // I know this is unethical but honestly i cant spend anymore time on this
+        //TODO find a way to get the raw string data in a text editor and store it in a string here.
+    return FileHandler.linesToString(getTestSuiteDataInLines());
     };
 
 }
