@@ -48,8 +48,6 @@ public class FileHandler {
         while (m.find()) {
             allMatches.add(m.group().trim());
         }
-        System.out.print(allMatches.get(0));
-
     return allMatches;
     };
 
