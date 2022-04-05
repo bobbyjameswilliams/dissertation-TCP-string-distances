@@ -10,8 +10,7 @@ class TCPTest {
     void main() {
     }
 
-    //TESTS FOR hammingDistance()
-
+    //################ TESTS FOR hammingDistance() ##########################
     @Test
     void hammingDistanceNumbers(){
         String string1 = "KAROLIN";
@@ -31,6 +30,30 @@ class TCPTest {
     }
 
     @Test
+    /*
+    Hamming distance using an example in `prioritising test cases with string distances`
+     */
+    void hammingDistanceExample1(){
+        String string1 = "ab";
+        String string2 = "abcde";
+        int expectedScore = 3;
+        int actualScore = TCP.hammingDistance(string1, string2);
+        assertEquals(expectedScore, actualScore);
+    }
+
+    @Test
+    /*
+    Hamming distance using an example in `prioritising test cases with string distances`
+     */
+    void hammingDistanceExample2(){
+        String string1 = "abcd";
+        String string2 = "abab";
+        int expectedScore = 2;
+        int actualScore = TCP.hammingDistance(string1, string2);
+        assertEquals(expectedScore, actualScore);
+    };
+
+    @Test
     void calculateStringDistance(){
     }
 
@@ -38,6 +61,8 @@ class TCPTest {
     void prioritiseTestCases(){
     }
 
+
+    //################  TESTS FOR manhattanDistance() ###########
     @Test
     void manhattanDistance(){
     }
