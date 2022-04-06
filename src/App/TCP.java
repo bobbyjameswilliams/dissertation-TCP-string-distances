@@ -1,11 +1,9 @@
 package App;
 import java.io.*;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner; // Import the Scanner class to read text files
-import App.FileHandler;
 import Test.FileHandlerTest.Data.FileHandlerTestData;
 import org.apache.commons.lang3.StringUtils;
+import java.util.zip.*;
 
 public class TCP {
     public static void main(String[] args) throws IOException {
@@ -38,6 +36,9 @@ public class TCP {
         }
     }
 
+    /*
+    Performs hamming distance. Main method for this prepares the strings and sends it to here.
+     */
     private static int performHammingDistance(String shortString, String longString){
         int distance = 0;
         int shortStringLength = shortString.length();
@@ -51,12 +52,16 @@ public class TCP {
             }
         }
         return distance;
-
-
     }
 
+    public static int NCDistance(String string1, String string2){
+        String concactString = string1 + string1;
 
-
+        String compressedString1;
+        String compressedString2;
+        String compressedConcatString;
+        return 100;
+    }
 
     private void levDistance(){
 

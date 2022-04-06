@@ -12,7 +12,16 @@ class TCPTest {
 
     //################ TESTS FOR hammingDistance() ##########################
     @Test
-    void hammingDistanceNumbers(){
+    void hammingDistanceSameString(){
+        String string1 = "bobby";
+        String string2 = "bobby";
+        int expectedScore = 0;
+        int actualScore = TCP.hammingDistance(string1, string2);
+        assertEquals(expectedScore, actualScore);
+    }
+
+    @Test
+    void hammingDistanceKName(){
         String string1 = "KAROLIN";
         String string2 = "KATHRIN";
         int expectedScore = 3;
@@ -52,6 +61,17 @@ class TCPTest {
         int actualScore = TCP.hammingDistance(string1, string2);
         assertEquals(expectedScore, actualScore);
     };
+
+    //###################### TESTS FOR NCDistance() #######################
+
+    @Test
+    void NCDistanceSameString(){
+        String string1 = "bobby";
+        String string2 = "bobby";
+        int expectedScore = 0;
+        int actualScore = TCP.NCDistance(string1, string2);
+        assertEquals(expectedScore, actualScore);
+    }
 
     @Test
     void calculateStringDistance(){
