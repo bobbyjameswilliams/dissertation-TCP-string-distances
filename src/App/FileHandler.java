@@ -1,10 +1,12 @@
 package App;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPOutputStream;
 
 public class FileHandler {
     public static List<String> readFile(String fileName){
@@ -74,5 +76,20 @@ public class FileHandler {
          */
 
         return null;
+    }
+
+    /*
+    Compresses string using GZip, returns compressed string.
+     */
+    public static String compressString(String string) throws Exception {
+        if (string.length() == 0 || string == null) {
+            return string;
+        }
+        ByteArrayOutputStream object = new ByteArrayOutputStream();
+        GZIPOutputStream gzip = new GZIPOutputStream(object);
+        gzip.write(string.getBytes("UTF-8"));
+        gzip.close();
+
+        return object.toString("UTF-8");
     }
 }

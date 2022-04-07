@@ -51,4 +51,17 @@ class FileHandlerTest {
         assertEquals(expectedResult,actualResult);
     }
 
+    //############## TESTS FOR compressString() #####################
+
+    @Test
+    void testCompressStringCompressionRepeatCharacters() throws Exception {
+        String uncompressedString = "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh";
+        String compressedString = FileHandler.compressString(uncompressedString);
+
+        int expectedResult = 24;
+        int actualResult = compressedString.length();
+        assertEquals(expectedResult,actualResult);
+    }
+
+
 }
