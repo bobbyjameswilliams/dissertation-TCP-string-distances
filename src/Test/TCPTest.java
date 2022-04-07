@@ -66,13 +66,21 @@ class TCPTest {
 
     @Test
     void NCDistanceSameString() throws Exception {
-        String string1 = "bobby";
-        String string2 = "bobby";
-        int expectedScore = 0;
-        int actualScore = TCP.NCDistance(string1, string2);
+        String string1 = "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh";
+        String string2 = "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh";
+        float expectedScore = 0;
+        float actualScore = TCP.NCDistance(string1, string2);
         assertEquals(expectedScore, actualScore);
     }
 
+    @Test
+    void NCDistanceDifferentString() throws Exception {
+        String string1 = "b";
+        String string2 = "abcdefghijklmnopqrstuvwxyz";
+        float expectedScore = 0;
+        float actualScore = TCP.NCDistance(string1, string2);
+        assertEquals(expectedScore, actualScore);
+    }
     @Test
     void calculateStringDistance(){
     }

@@ -53,7 +53,7 @@ public class TCP {
         return distance;
     }
 
-    public static int NCDistance(String string1, String string2) throws Exception {
+    public static float NCDistance(String string1, String string2) throws Exception {
         String concactString = string1 + string1;
 
         //Retrieve Compressed String
@@ -67,9 +67,9 @@ public class TCP {
         int compressedString2Length = compressedString2.length();
         int compressedConcatStringLength = compressedConcatString.length();
 
-        int NCD_numerator = compressedConcatStringLength - Integer.min(compressedString1Length,compressedString2Length);
-        int NCD_denominator = Integer.max(compressedString1Length,compressedString2Length);
-        return NCD_numerator/NCD_denominator;
+        float NCD_numerator = compressedConcatStringLength - Integer.min(compressedString1Length,compressedString2Length);
+        float NCD_denominator = Integer.max(compressedString1Length,compressedString2Length);
+        return (NCD_numerator / NCD_denominator);
     }
 
     private void levDistance(){
