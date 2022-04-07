@@ -53,13 +53,23 @@ public class TCP {
         return distance;
     }
 
-    public static int NCDistance(String string1, String string2){
+    public static int NCDistance(String string1, String string2) throws Exception {
         String concactString = string1 + string1;
 
-        String compressedString1;
-        String compressedString2;
-        String compressedConcatString;
-        return 100;
+        //Retrieve Compressed String
+        String compressedString1 = FileHandler.compressString(string1);
+        String compressedString2 = FileHandler.compressString(string2);
+        String compressedConcatString = FileHandler.compressString(concactString);
+
+        //Get Lengths
+
+        int compressedString1Length = compressedString1.length();
+        int compressedString2Length = compressedString2.length();
+        int compressedConcatStringLength = compressedConcatString.length();
+
+        int NCD_numerator = compressedConcatStringLength - Integer.min(compressedString1Length,compressedString2Length);
+        int NCD_denominator = Integer.max(compressedString1Length,compressedString2Length);
+        return NCD_numerator/NCD_denominator;
     }
 
     private void levDistance(){

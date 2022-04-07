@@ -65,7 +65,7 @@ class TCPTest {
     //###################### TESTS FOR NCDistance() #######################
 
     @Test
-    void NCDistanceSameString(){
+    void NCDistanceSameString() throws Exception {
         String string1 = "bobby";
         String string2 = "bobby";
         int expectedScore = 0;
