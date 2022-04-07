@@ -27,7 +27,6 @@ public class TCP {
     }
 
     public static int hammingDistance(String string1, String string2){
-        //TODO: Fix hamming distance of different lengths.
         if (string1.length() < string2.length()){
             return performHammingDistance(string1, string2);
         }
