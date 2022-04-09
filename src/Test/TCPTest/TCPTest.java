@@ -108,11 +108,11 @@ class TCPTest {
         //Class[] parameterTypes = new Class[2];
         //parameterTypes[0] = String.class;
         //parameterTypes[1] = String.class;
-        Method fitnessFunctionToPass = TCP.class.getMethod("hammingDistance", String.class, String.class);
+        Method fitnessFunctionToPass = TCP.class.getMethod("NCDistance", String.class, String.class);
         TCP tcp = new TCP();
-        ArrayList<ArrayList<Double>> table = TCP.createSimilarityMatrix(tcp, testData, fitnessFunctionToPass);
+        ArrayList<ArrayList<Object>> table = TCP.createSimilarityMatrix(tcp, testData, fitnessFunctionToPass);
 
-        int expectedResult = 12;
+        int expectedResult = 13;
         assert table != null;
         int actualResult = table.size();
         assertEquals(expectedResult, actualResult);

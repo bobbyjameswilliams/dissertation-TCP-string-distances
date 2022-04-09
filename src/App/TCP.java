@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import Test.FileHandlerTest.Data.FileHandlerTestData;
+import com.sun.corba.se.spi.ior.ObjectKey;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.reflect.Method;
 import java.util.zip.*;
@@ -77,7 +78,7 @@ public class TCP {
 
     //############### STRING DISTANCES ######################
 
-    public static ArrayList<ArrayList<Double>> createSimilarityMatrix(Object object, List<String> testCases, Method distanceMethod) throws InvocationTargetException, IllegalAccessException {
+    public static ArrayList<ArrayList<Object>> createSimilarityMatrix(Object object, List<String> testCases, Method distanceMethod) throws InvocationTargetException, IllegalAccessException {
         /*
         PSEUDOCODO
         m=n=testsuite.length
@@ -88,11 +89,12 @@ public class TCP {
                 list.add(fitnessFunction(testsuite(m),testSuite(n))
             mainList.add(list)
          */
-        ArrayList<ArrayList<Double>> similarityMatrix = null;
-        for (int i = 0; i < testCases.size(); i++) {
-            ArrayList<Double> testCaseDiffList = null;
-            for (int j = 0; i < testCases.size(); i++){
-                Double stringDistance = (Double) distanceMethod.invoke(object, testCases.get(i), testCases.get(j));
+        int testCaseCount = testCases.size();
+        ArrayList<ArrayList<Object>> similarityMatrix = new ArrayList<>();
+        for (int i = 0; i < testCaseCount; i++) {
+            ArrayList<Object> testCaseDiffList = new ArrayList<>();
+            for (int j = 0; j < testCaseCount; j++){
+                Object stringDistance = distanceMethod.invoke(object, testCases.get(i), testCases.get(j));
                 testCaseDiffList.add(stringDistance);
             }
             similarityMatrix.add(testCaseDiffList);
