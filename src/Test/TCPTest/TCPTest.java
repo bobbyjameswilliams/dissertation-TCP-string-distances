@@ -1,7 +1,15 @@
-package Test;
+package Test.TCPTest;
 
+import App.FileHandler;
 import org.junit.jupiter.api.Test;
 import App.TCP;
+import Test.FileHandlerTest.Data.FileHandlerTestData;
+import Test.TCPTest.Data.TCPTestData;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,10 +74,14 @@ class TCPTest {
 
     @Test
     void NCDistanceSameString() throws Exception {
-        String string1 = "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh";
-        String string2 = "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh";
+        //TODO: Try it with two test cases, play around with the data.
+        List<String> testSuiteData = FileHandlerTestData.getTestSuiteDataInLines();
+        List<String> listOfTestCases = FileHandler.parseTests(testSuiteData);
+
+        String testCase1 =  listOfTestCases.get(0);
+        String testCase2 = listOfTestCases.get(1);
         float expectedScore = 0;
-        float actualScore = TCP.NCDistance(string1, string2);
+        float actualScore = TCP.NCDistance(testCase1, testCase2);
         assertEquals(expectedScore, actualScore);
     }
 
@@ -87,8 +99,24 @@ class TCPTest {
 
     @Test
     void prioritiseTestCases(){
+
     }
 
+    @Test
+    void createSimilarityMatrixCorrectLength() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        List<String> testData = FileHandlerTestData.getCorrectlyParsedExampleTestSuite();
+        //Class[] parameterTypes = new Class[2];
+        //parameterTypes[0] = String.class;
+        //parameterTypes[1] = String.class;
+        Method fitnessFunctionToPass = TCP.class.getMethod("hammingDistance", String.class, String.class);
+        TCP tcp = new TCP();
+        ArrayList<ArrayList<Double>> table = TCP.createSimilarityMatrix(tcp, testData, fitnessFunctionToPass);
+
+        int expectedResult = 12;
+        assert table != null;
+        int actualResult = table.size();
+        assertEquals(expectedResult, actualResult);
+    }
 
     //################  TESTS FOR manhattanDistance() ###########
     @Test

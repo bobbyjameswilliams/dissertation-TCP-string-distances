@@ -1,8 +1,11 @@
 package App;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import Test.FileHandlerTest.Data.FileHandlerTestData;
 import org.apache.commons.lang3.StringUtils;
+import java.lang.reflect.Method;
 import java.util.zip.*;
 
 public class TCP {
@@ -13,10 +16,7 @@ public class TCP {
         System.out.print(hammingDistanceTests);
     }
 
-
-    private void prioritiseTestCases(){
-
-    }
+    //############### STRING DISTANCES ######################
 
     private void manhattanDistance(){
 
@@ -62,7 +62,6 @@ public class TCP {
         String compressedConcatString = FileHandler.compressString(concactString);
 
         //Get Lengths
-
         int compressedString1Length = compressedString1.length();
         int compressedString2Length = compressedString2.length();
         int compressedConcatStringLength = compressedConcatString.length();
@@ -76,8 +75,29 @@ public class TCP {
 
     }
 
-    private void applyFitnessFunction(){
+    //############### STRING DISTANCES ######################
 
+    public static ArrayList<ArrayList<Double>> createSimilarityMatrix(Object object, List<String> testCases, Method distanceMethod) throws InvocationTargetException, IllegalAccessException {
+        /*
+        PSEUDOCODO
+        m=n=testsuite.length
+        create main_list
+        Foreach test case(0..n):
+            create list
+            Foreach test case(0..m):
+                list.add(fitnessFunction(testsuite(m),testSuite(n))
+            mainList.add(list)
+         */
+        ArrayList<ArrayList<Double>> similarityMatrix = null;
+        for (int i = 0; i < testCases.size(); i++) {
+            ArrayList<Double> testCaseDiffList = null;
+            for (int j = 0; i < testCases.size(); i++){
+                Double stringDistance = (Double) distanceMethod.invoke(object, testCases.get(i), testCases.get(j));
+                testCaseDiffList.add(stringDistance);
+            }
+            similarityMatrix.add(testCaseDiffList);
+        }
+        return similarityMatrix;
     }
 
     private void generateRandomOrdering(){

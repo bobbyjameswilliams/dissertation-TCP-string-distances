@@ -1,8 +1,10 @@
 package Test.FileHandlerTest.Data;
 
 import App.FileHandler;
+import App.TCP;
 import com.sun.xml.internal.fastinfoset.util.CharArray;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,13 +23,19 @@ public class FileHandlerTestData {
     public static String getCorrectlyParsedFirstTest(){
         final List<String> finalTestSuiteData = getTestSuiteDataInLines();
         final List<String> sublist = finalTestSuiteData.subList(13,18);
-        //TODO Get this data to be static do that these tests dont rely on the function below
+        //TODO Get this data to be static so that these tests dont rely on the function below
         return FileHandler.linesToString(sublist);
+    }
+
+    public static List<String> getCorrectlyParsedExampleTestSuite(){
+        final List<String> testSuiteData = getTestSuiteDataInLines();
+        return FileHandler.parseTests(testSuiteData);
     }
 
     public static List<String> getTestSuiteDataInLines(){
         // Based on test suite generated with 1 second budget
         // This is how the data will look once it has been read in
+        // Contains 12 tests
         return Arrays.asList(
                 "package org.apache.commons.cli;",
                 "",

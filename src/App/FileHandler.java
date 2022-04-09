@@ -27,18 +27,8 @@ public class FileHandler {
     }
 
     public static List<String> parseTests(List<String> file){
-//        Map<String, String> dictionary = new HashMap<String, String>();
-//        List<String> testCase = new ArrayList<String>();
-//        Integer counter = 0;
-//        //Condition Booleans
-//        Boolean atTestFound = false;
-//        Boolean recordLinesToList = false;
-//
-//        for (String item : file) {
-//
-//        }
         String listString = "";
-        List<String> x = Arrays.asList("bruh","bruh");
+
         for (String s : file)
         {
             listString += s + "\n";
@@ -82,14 +72,15 @@ public class FileHandler {
     Compresses string using GZip, returns compressed string.
      */
     public static String compressString(String string) throws Exception {
+        //TODO:
         if (string.length() == 0 || string == null) {
             return string;
         }
         ByteArrayOutputStream object = new ByteArrayOutputStream();
         GZIPOutputStream gzip = new GZIPOutputStream(object);
-        gzip.write(string.getBytes("UTF-8"));
+        gzip.write(string.getBytes());
         gzip.close();
 
-        return object.toString("UTF-8");
+        return object.toString("ISO-8859-1");
     }
 }
