@@ -1,5 +1,7 @@
 package App;
 import java.io.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,11 +11,24 @@ import App.Models.TestCase;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class TCP {
-    public static void main(String[] args) throws IOException {
-        List<String> file = Utils.readFile("./src/Test/FileHandlerTest/Data/parseTests/testSuiteTestData.txt");
+    public static void main(String[] args) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        System.out.println("Reading File...");
+        List<String> file = Utils.readFile("./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest0.java");
+        //List<String> file = Utils.readFile("./src/test.txt");
+
+        System.out.println("Parsing File...");
         Map<Integer, TestCase> parsedFile = Utils.parseTests(file);
+
+        System.out.println("Generating Similarity Matrix...");
+        Method fitnessFunctionToPass = TCP.class.getMethod("NCDistance", String.class, String.class);
+        ArrayList<ArrayList<Object>> similarityMatrix = createSimilarityMatrix(new TCP(), parsedFile, fitnessFunctionToPass);
+
+        System.out.println("Applying Fitness Function...");
+        Map<Integer, TestCase> prioritisedTestSuite = averageFitnessFunction(similarityMatrix, parsedFile);
+        System.out.println("wibble");
     }
 
     //############### STRING DISTANCES ######################
@@ -83,6 +98,7 @@ public class TCP {
             for (int j = 0; j < testCaseCount; j++){
                 String testCase1 = testCases.get(i).getTestData();
                 String testCase2 = testCases.get(j).getTestData();
+                System.out.println("String distance " + i + " against " + j);
                 Object stringDistance = distanceMethod.invoke(tcpObject, testCase1 , testCase2 );
                 testCaseDiffList.add(stringDistance);
             }
@@ -91,26 +107,48 @@ public class TCP {
         return similarityMatrix;
     }
 
-    public static Map<Integer, TestCase> averageFitnessFunction(ArrayList<ArrayList<Object>> similarityMatrix){
+    //### AVERAGE FITNESS FUNCTION ###
+
+    public static Map<Integer, TestCase> averageFitnessFunction(ArrayList<ArrayList<Object>> similarityMatrix, Map<Integer, TestCase> testSet){
         /*
         For every entry in the list, calculate the average and then save that as a key in a dictionary. Maybe create a
         test case class to store the data in??
          */
-        Map<Integer, TestCase> testSet = new HashMap<>();
+        Map<TestCase,Double> testCaseAverages = calculateAndPopulateAverages(similarityMatrix, testSet);
+        return generateOrdering(testCaseAverages);
+    }
 
-        for (ArrayList<Object> testCase : similarityMatrix) {
+    private static Map<TestCase, Double> calculateAndPopulateAverages(ArrayList<ArrayList<Object>> similarityMatrix, Map<Integer, TestCase> testSet){
+        //Calculate average score
+        Map<TestCase, Double> testCaseAverages = new HashMap<>();
+        for (int i = 0; i < similarityMatrix.size(); i++) {
             Double sum = 0.0;
+            ArrayList<Object> testCase = similarityMatrix.get(i);
             for (Object distance : testCase){
                 sum += (Double) distance;
             }
-
-            Double average = sum / (testCase.size() - 1) ;
-            //testSet.put(similarityMatrix.indexOf(testCase));
+            double average = sum / (testCase.size() - 1) ;
+            testCaseAverages.put(testSet.get(i), average);
         }
-        return null;
+        return testCaseAverages;
     }
-    private void generateRandomOrdering(){
 
+    private static Map<Integer, TestCase> generateOrdering(Map<TestCase, Double> testCaseAverages) {
+        Map<Integer, TestCase> prioritisedTestSuite = new HashMap<>();
+        Map<TestCase, Double> sortedAverages = Utils.sortMapByValue(testCaseAverages);
+        int counter = testCaseAverages.size() - 1;
+        for (Map.Entry<TestCase, Double> entry : sortedAverages.entrySet()) {
+            entry.getKey().setOrder(counter);
+            prioritisedTestSuite.put(counter, entry.getKey());
+            counter -= 1;
+        }
+        return prioritisedTestSuite;
+    }
+    //### RANDOM ORDERING
+    private void generateRandomOrdering(Map<Integer, TestCase> testSet)
+    {
+        //Generate a list of size of the test set with numbers from 0 to n-1 ascending
+        //Pick a random entry from 0 to n, pop that entry and repeat.
     }
 
     private void evaluateTestSuite(){

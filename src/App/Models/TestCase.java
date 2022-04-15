@@ -6,34 +6,26 @@ public class TestCase {
     private final int testID;
     private final String testData;
     private int order;
-    public TestCase(int testID, String testData){
+
+    public TestCase(int testID, String testData) {
         this.testID = testID;
         this.testData = testData;
         this.order = testID;
     }
-    
 
-    public int getTestID(){
-        return  testID;
+    public int getTestID() {
+        return testID;
     }
 
-    public String getTestData(){
+    public String getTestData() {
         return testData;
     }
 
-    public int getOrder(){
+    public int getOrder() {
         return order;
     }
 
-    public double getAverageScore(){
-        return averageScore;
-    }
-
-    public void setOrder(int order){
+    public void setOrder(int order) {
         this.order = order;
-    }
-
-    public void setAverageScore(double averageScore){
-        this.averageScore = averageScore;
     }
 }
