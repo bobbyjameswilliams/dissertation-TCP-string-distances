@@ -2,11 +2,15 @@ package App;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import App.Models.TestCase;
 import Test.FileHandlerTest.Data.FileHandlerTestData;
 import com.sun.corba.se.spi.ior.ObjectKey;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.zip.*;
 
 public class TCP {
@@ -36,6 +40,8 @@ public class TCP {
         }
     }
 
+    //############### STRING DISTANCES ######################
+
     /*
     Performs hamming distance. Main method for this prepares the strings and sends it to here.
      */
@@ -54,7 +60,7 @@ public class TCP {
         return distance;
     }
 
-    public static float NCDistance(String string1, String string2) throws Exception {
+    public static double NCDistance(String string1, String string2) throws Exception {
         String concactString = string1 + string1;
 
         //Retrieve Compressed String
@@ -67,8 +73,8 @@ public class TCP {
         int compressedString2Length = compressedString2.length();
         int compressedConcatStringLength = compressedConcatString.length();
 
-        float NCD_numerator = compressedConcatStringLength - Integer.min(compressedString1Length,compressedString2Length);
-        float NCD_denominator = Integer.max(compressedString1Length,compressedString2Length);
+        double NCD_numerator = compressedConcatStringLength - Integer.min(compressedString1Length,compressedString2Length);
+        double NCD_denominator = Integer.max(compressedString1Length,compressedString2Length);
         return (NCD_numerator / NCD_denominator);
     }
 
@@ -76,9 +82,8 @@ public class TCP {
 
     }
 
-    //############### STRING DISTANCES ######################
-
-    public static ArrayList<ArrayList<Object>> createSimilarityMatrix(Object object, List<String> testCases, Method distanceMethod) throws InvocationTargetException, IllegalAccessException {
+    //Polymorphic for double and int
+    public static ArrayList<ArrayList<Object>> createSimilarityMatrix(Object tcpObject, List<String> testCases, Method distanceMethod) throws InvocationTargetException, IllegalAccessException {
         /*
         PSEUDOCODO
         m=n=testsuite.length
@@ -94,7 +99,7 @@ public class TCP {
         for (int i = 0; i < testCaseCount; i++) {
             ArrayList<Object> testCaseDiffList = new ArrayList<>();
             for (int j = 0; j < testCaseCount; j++){
-                Object stringDistance = distanceMethod.invoke(object, testCases.get(i), testCases.get(j));
+                Object stringDistance = distanceMethod.invoke(tcpObject, testCases.get(i), testCases.get(j));
                 testCaseDiffList.add(stringDistance);
             }
             similarityMatrix.add(testCaseDiffList);
@@ -102,6 +107,24 @@ public class TCP {
         return similarityMatrix;
     }
 
+    public static Map<Integer, TestCase> averageFitnessFunction(ArrayList<ArrayList<Object>> similarityMatrix){
+        /*
+        For every entry in the list, calculate the average and then save that as a key in a dictionary. Maybe create a
+        test case class to store the data in??
+         */
+        Map<Integer, TestCase> testSet = new HashMap<>();
+
+        for (ArrayList<Object> testCase : similarityMatrix) {
+            Double sum = 0.0;
+            for (Object distance : testCase){
+                sum += (Double) distance;
+            }
+            //entries - 1 because one will be the test case by itself.
+            Double average = sum / (testCase.size() - 1) ;
+            //testSet.put(similarityMatrix.indexOf(testCase));
+        }
+        return null;
+    }
     private void generateRandomOrdering(){
 
     }
