@@ -6,30 +6,17 @@ import java.util.HashMap;
 import java.util.List;
 
 import App.Models.TestCase;
-import Test.FileHandlerTest.Data.FileHandlerTestData;
-import com.sun.corba.se.spi.ior.ObjectKey;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.zip.*;
 
 public class TCP {
     public static void main(String[] args) throws IOException {
-        List<String> file = FileHandler.readFile("./src/Test/FileHandlerTest/Data/parseTests/testSuiteTestData.txt");
-        List<String> parsedFile = FileHandler.parseTests(file);
-        int hammingDistanceTests = hammingDistance(parsedFile.get(0), parsedFile.get(0));
-        System.out.print(hammingDistanceTests);
+        List<String> file = Utils.readFile("./src/Test/FileHandlerTest/Data/parseTests/testSuiteTestData.txt");
+        Map<Integer, TestCase> parsedFile = Utils.parseTests(file);
     }
 
     //############### STRING DISTANCES ######################
-
-    private void manhattanDistance(){
-
-    }
-
-    private void euclideanDistance(){
-
-    }
 
     public static int hammingDistance(String string1, String string2){
         if (string1.length() < string2.length()){
@@ -39,8 +26,6 @@ public class TCP {
             return performHammingDistance(string2, string1);
         }
     }
-
-    //############### STRING DISTANCES ######################
 
     /*
     Performs hamming distance. Main method for this prepares the strings and sends it to here.
@@ -64,9 +49,9 @@ public class TCP {
         String concactString = string1 + string1;
 
         //Retrieve Compressed String
-        String compressedString1 = FileHandler.compressString(string1);
-        String compressedString2 = FileHandler.compressString(string2);
-        String compressedConcatString = FileHandler.compressString(concactString);
+        String compressedString1 = Utils.compressString(string1);
+        String compressedString2 = Utils.compressString(string2);
+        String compressedConcatString = Utils.compressString(concactString);
 
         //Get Lengths
         int compressedString1Length = compressedString1.length();
@@ -78,12 +63,9 @@ public class TCP {
         return (NCD_numerator / NCD_denominator);
     }
 
-    private void levDistance(){
-
-    }
-
+    //############### FITNESS FUNCTIONS ######################
     //Polymorphic for double and int
-    public static ArrayList<ArrayList<Object>> createSimilarityMatrix(Object tcpObject, List<String> testCases, Method distanceMethod) throws InvocationTargetException, IllegalAccessException {
+    public static ArrayList<ArrayList<Object>> createSimilarityMatrix(Object tcpObject, Map<Integer, TestCase> testCases, Method distanceMethod) throws InvocationTargetException, IllegalAccessException {
         /*
         PSEUDOCODO
         m=n=testsuite.length
@@ -99,7 +81,9 @@ public class TCP {
         for (int i = 0; i < testCaseCount; i++) {
             ArrayList<Object> testCaseDiffList = new ArrayList<>();
             for (int j = 0; j < testCaseCount; j++){
-                Object stringDistance = distanceMethod.invoke(tcpObject, testCases.get(i), testCases.get(j));
+                String testCase1 = testCases.get(i).getTestData();
+                String testCase2 = testCases.get(j).getTestData();
+                Object stringDistance = distanceMethod.invoke(tcpObject, testCase1 , testCase2 );
                 testCaseDiffList.add(stringDistance);
             }
             similarityMatrix.add(testCaseDiffList);
@@ -119,7 +103,7 @@ public class TCP {
             for (Object distance : testCase){
                 sum += (Double) distance;
             }
-            //entries - 1 because one will be the test case by itself.
+
             Double average = sum / (testCase.size() - 1) ;
             //testSet.put(similarityMatrix.indexOf(testCase));
         }

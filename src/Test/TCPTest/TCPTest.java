@@ -1,15 +1,16 @@
 package Test.TCPTest;
 
-import App.FileHandler;
+import App.Models.TestCase;
+import App.Utils;
 import org.junit.jupiter.api.Test;
 import App.TCP;
-import Test.FileHandlerTest.Data.FileHandlerTestData;
-import Test.TCPTest.Data.TCPTestData;
+import Test.UtilsTest.Data.UtilsTestData;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -76,11 +77,11 @@ class TCPTest {
     void NCDistanceSameString() throws Exception {
         // KNOWN FAILING
         //TODO: Try it with two test cases, play around with the data.
-        List<String> testSuiteData = FileHandlerTestData.getTestSuiteDataInLines();
-        List<String> listOfTestCases = FileHandler.parseTests(testSuiteData);
+        List<String> testSuiteData = UtilsTestData.getTestSuiteDataInLines();
+        Map<Integer, TestCase> listOfTestCases = Utils.parseTests(testSuiteData);
 
-        String testCase1 =  listOfTestCases.get(0);
-        String testCase2 = listOfTestCases.get(1);
+        String testCase1 =  listOfTestCases.get(0).getTestData();
+        String testCase2 = listOfTestCases.get(1).getTestData();
         double expectedScore = 0;
         double actualScore = TCP.NCDistance(testCase1, testCase2);
         assertEquals(expectedScore, actualScore);
@@ -106,7 +107,7 @@ class TCPTest {
 
     @Test
     void createSimilarityMatrixCorrectLength() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        List<String> testData = FileHandlerTestData.getCorrectlyParsedExampleTestSuite();
+        Map<Integer, TestCase> testData = UtilsTestData.getCorrectlyParsedExampleTestSuite();
 
         Method fitnessFunctionToPass = TCP.class.getMethod("NCDistance", String.class, String.class);
         TCP tcp = new TCP();
@@ -125,7 +126,7 @@ class TCPTest {
     //############### TESTS FOR averageFitnessfunction() ############
     @Test
     void testAverageFitnessFunction() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        List<String> testData = FileHandlerTestData.getCorrectlyParsedExampleTestSuite();
+        Map<Integer, TestCase> testData = UtilsTestData.getCorrectlyParsedExampleTestSuite();
 
         Method fitnessFunctionToPass = TCP.class.getMethod("NCDistance", String.class, String.class);
         TCP tcp = new TCP();

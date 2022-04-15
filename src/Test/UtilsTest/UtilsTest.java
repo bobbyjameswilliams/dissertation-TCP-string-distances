@@ -1,15 +1,17 @@
-package Test.FileHandlerTest;
+package Test.UtilsTest;
 
-import App.FileHandler;
+import App.Models.TestCase;
+import App.Utils;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-import static Test.FileHandlerTest.Data.FileHandlerTestData.*;
+import static Test.UtilsTest.Data.UtilsTestData.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileHandlerTest {
+class UtilsTest {
 
    // TESTS FOR readFile()
     @Test
@@ -17,7 +19,7 @@ class FileHandlerTest {
         /**
          * Tests that the first line is read correct
          */
-        List<String> result = FileHandler.readFile(testReadFilePath);
+        List<String> result = Utils.readFile(testReadFilePath);
         assertEquals(testReadFileFirstLine, result.get(0));
     }
 
@@ -26,7 +28,7 @@ class FileHandlerTest {
         /**
          * Tests that the correct line count is present for expected
          */
-        List<String> result = FileHandler.readFile(testReadFilePath);
+        List<String> result = Utils.readFile(testReadFilePath);
         assertEquals(testReadFileLineCount, result.size());
     }
 
@@ -35,8 +37,8 @@ class FileHandlerTest {
     void testParseTestFirstTest(){
         List<String> testSuiteData = getTestSuiteDataInLines();
         String correctlyParsedFirstTest = getCorrectlyParsedFirstTest();
-        List<String> listOfTestContents = FileHandler.parseTests(testSuiteData);
-        assertEquals(correctlyParsedFirstTest, listOfTestContents.get(0));
+        Map<Integer, TestCase> listOfTestContents = Utils.parseTests(testSuiteData);
+        assertEquals(correctlyParsedFirstTest, listOfTestContents.get(0).getTestData());
     }
 
     //TESTS FOR linesToString()
@@ -47,7 +49,7 @@ class FileHandlerTest {
         String secondString = "second";
         List<String> testList = Arrays.asList(firstString,secondString);
         String expectedResult ="first\nsecond";
-        String actualResult = FileHandler.linesToString(testList);
+        String actualResult = Utils.linesToString(testList);
         assertEquals(expectedResult,actualResult);
     }
 
@@ -56,7 +58,7 @@ class FileHandlerTest {
     @Test
     void testCompressStringCompressionRepeatCharacters() throws Exception {
         String uncompressedString = "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh";
-        String compressedString = FileHandler.compressString(uncompressedString);
+        String compressedString = Utils.compressString(uncompressedString);
 
         int expectedResult = 24;
         int actualResult = compressedString.length();

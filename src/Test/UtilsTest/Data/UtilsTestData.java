@@ -1,19 +1,18 @@
-package Test.FileHandlerTest.Data;
+package Test.UtilsTest.Data;
 
-import App.FileHandler;
-import App.TCP;
-import com.sun.xml.internal.fastinfoset.util.CharArray;
+import App.Models.TestCase;
+import App.Utils;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Test suite data that is too large is stored here for use in FileHandlerTest
  */
-public class FileHandlerTestData {
+public class UtilsTestData {
     // TEST DATA FOR readFile()
-    public static final String testReadFilePath = "./src/Test/FileHandlerTest/Data/readFile/test.txt";
+    public static final String testReadFilePath = "./src/Test/UtilsTest/Data/readFile/test.txt";
     public static final int testReadFileLineCount = 9;
     public static final String testReadFileFirstLine = "package Test.Data;";
 
@@ -24,12 +23,12 @@ public class FileHandlerTestData {
         final List<String> finalTestSuiteData = getTestSuiteDataInLines();
         final List<String> sublist = finalTestSuiteData.subList(13,18);
         //TODO Get this data to be static so that these tests dont rely on the function below
-        return FileHandler.linesToString(sublist);
+        return Utils.linesToString(sublist);
     }
 
-    public static List<String> getCorrectlyParsedExampleTestSuite(){
+    public static Map<Integer, TestCase> getCorrectlyParsedExampleTestSuite(){
         final List<String> testSuiteData = getTestSuiteDataInLines();
-        return FileHandler.parseTests(testSuiteData);
+        return Utils.parseTests(testSuiteData);
     }
 
     public static List<String> getTestSuiteDataInLines(){
@@ -244,7 +243,7 @@ public class FileHandlerTestData {
     public static String getTestSuiteDataStringDelimited(){
         // I know this is unethical but honestly i cant spend anymore time on this
         //TODO find a way to get the raw string data in a text editor and store it in a string here.
-    return FileHandler.linesToString(getTestSuiteDataInLines());
+    return Utils.linesToString(getTestSuiteDataInLines());
     };
 
 }

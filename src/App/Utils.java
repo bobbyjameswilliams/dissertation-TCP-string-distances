@@ -1,5 +1,7 @@
 package App;
 
+import App.Models.TestCase;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
-public class FileHandler {
+public class Utils {
     public static List<String> readFile(String fileName){
         List<String> fileLines = new ArrayList<String>();
         try {
@@ -26,7 +28,7 @@ public class FileHandler {
         return fileLines;
     }
 
-    public static List<String> parseTests(List<String> file){
+    public static Map<Integer, TestCase> parseTests(List<String> file){
         String listString = "";
 
         for (String s : file)
@@ -34,11 +36,15 @@ public class FileHandler {
             listString += s + "\n";
         }
 
-        List<String> allMatches = new ArrayList<String>();
+        Map<Integer, TestCase> allMatches = new HashMap<Integer, TestCase>() {
+
+        };
         Matcher m = Pattern.compile("[^{\\}]+(?=})")
                 .matcher(listString);
+        int caseNo = 0;
         while (m.find()) {
-            allMatches.add(m.group().trim());
+            allMatches.put(caseNo , new TestCase(caseNo, m.group().trim()));
+            caseNo += 1;
         }
     return allMatches;
     };
