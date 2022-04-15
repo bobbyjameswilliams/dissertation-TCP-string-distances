@@ -7,8 +7,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+//import java.util.regex.Matcher;
+//import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 import com.florianingerl.util.regex.*;
 
@@ -59,10 +59,11 @@ public class Utils {
         //TODO implement
     };
 
+    /**
+     * Takes in a list of strings and returns a single string delimited with \n
+     */
     public static String linesToString(List<String> list){
-        /**
-         * Takes in a list of strings and returns a single string delimited with \n
-         */
+
         String listString = "";
         for (String s : list)
         {
@@ -71,12 +72,12 @@ public class Utils {
         return listString.trim();
     }
 
-    public static List<String> stringToLines(String string){
-        /**
-         * Takes in a string delimited with \n and separates them out into lines in a list.
-         * TODO implement
-         */
+    /**
+     * Takes in a string delimited with \n and separates them out into lines in a list.
+     * TODO implement
+     */
 
+    public static List<String> stringToLines(String string){
         return null;
     }
 
@@ -97,7 +98,7 @@ public class Utils {
      */
     public static String compressString(String string) throws Exception {
         //TODO:
-        if (string.length() == 0 || string == null) {
+        if (string.length() == 0) {
             return string;
         }
         ByteArrayOutputStream object = new ByteArrayOutputStream();
