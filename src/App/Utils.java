@@ -43,8 +43,12 @@ public class Utils {
                 .matcher(listString);
         int caseNo = 0;
         while (m.find()) {
-            allMatches.put(caseNo , new TestCase(caseNo, m.group().trim()));
-            caseNo += 1;
+            String testCase = m.group().trim();
+
+            if (testCase.length() > 0){
+                allMatches.put(caseNo , new TestCase(caseNo, testCase));
+                caseNo += 1;
+            }
         }
     return allMatches;
     };
@@ -72,6 +76,18 @@ public class Utils {
          */
 
         return null;
+    }
+
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
     }
 
     /*
