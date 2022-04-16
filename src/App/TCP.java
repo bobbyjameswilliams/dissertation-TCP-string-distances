@@ -98,7 +98,7 @@ public class TCP {
             for (int j = 0; j < testCaseCount; j++){
                 String testCase1 = testCases.get(i).getTestData();
                 String testCase2 = testCases.get(j).getTestData();
-                System.out.println("String distance " + i + " against " + j);
+                //System.out.println("String distance " + i + " against " + j);
                 Object stringDistance = distanceMethod.invoke(tcpObject, testCase1 , testCase2 );
                 testCaseDiffList.add(stringDistance);
             }

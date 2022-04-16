@@ -54,12 +54,16 @@ public class Utils {
             //trimming off the curly braces.
             classBodyString = classBodyString.substring(1, classBodyString.length() - 1);
 
-            Matcher m = Pattern.compile("\\{((?>[^{}]++|(\\{((?>[^{}]++|(\\{((?>[^{}]++|(\\{((?>[^{}]++|(\\{((?>[^{}]++|())*)\\}))*)\\}))*)\\}))*)\\}))*)\\}")
+            Matcher m = Pattern.compile("(?<recurse>\\{(([^{}]++|(?'recurse'))*)\\})")
                     .matcher(classBodyString);
+//            Matcher m = Pattern.compile("\\{((?>[^{}]++|(\\{((?>[^{}]++|(\\{((?>[^{}]++|(\\{((?>[^{}]++|(\\{((?>[^{}]++|())*)\\}))*)\\}))*)\\}))*)\\}))*)\\}")
+//                    .matcher(classBodyString);
             int caseNo = 0;
 
             while (m.find()) {
                 String testCase = m.group().trim();
+                //Remove curly brace from beginning and end of test case.
+                testCase = testCase.substring(1, testCase.length() - 1).trim();
                 if (testCase.length() > 0){
                     allMatches.put(caseNo , new TestCase(caseNo, testCase));
                     caseNo += 1;
