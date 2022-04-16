@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class TCP {
     public static void main(String[] args) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         System.out.println("Reading File...");
-        List<String> file = Utils.readFile("./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest0.java");
+        List<String> file = Utils.readFile("./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest3.java");
         //List<String> file = Utils.readFile("./src/test.txt");
 
         System.out.println("Parsing File...");

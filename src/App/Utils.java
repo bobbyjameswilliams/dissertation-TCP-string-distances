@@ -31,26 +31,43 @@ public class Utils {
     }
 
     public static Map<Integer, TestCase> parseTests(List<String> file){
-        String listString = "";
+        StringBuilder listString = new StringBuilder();
 
         for (String s : file)
         {
-            listString += s + "\n";
+            listString.append(s).append("\n");
         }
 
-        Map<Integer, TestCase> allMatches = new HashMap<Integer, TestCase>() {
+        //Parsing class body
+        Matcher cb = Pattern.compile("\\{.*\\}",Pattern.DOTALL)
+                .matcher(listString.toString());
+        List<String> classBody = new ArrayList<>();
+        while (cb.find()) {
+            String testCase = cb.group().trim();
+            classBody.add(testCase);
+        }
 
-        };
-        Matcher m = Pattern.compile("[^{\\}]+(?=})")
-                .matcher(listString);
-        int caseNo = 0;
-        while (m.find()) {
-            String testCase = m.group().trim();
+        Map<Integer, TestCase> allMatches = new HashMap<>();
+        //Parsing function body
+        if (classBody.size() == 1){
+            String classBodyString = classBody.get(0);
+            //trimming off the curly braces.
+            classBodyString = classBodyString.substring(1, classBodyString.length() - 1);
 
-            if (testCase.length() > 0){
-                allMatches.put(caseNo , new TestCase(caseNo, testCase));
-                caseNo += 1;
+            Matcher m = Pattern.compile("\\{((?>[^{}]++|(\\{((?>[^{}]++|(\\{((?>[^{}]++|(\\{((?>[^{}]++|(\\{((?>[^{}]++|())*)\\}))*)\\}))*)\\}))*)\\}))*)\\}")
+                    .matcher(classBodyString);
+            int caseNo = 0;
+
+            while (m.find()) {
+                String testCase = m.group().trim();
+                if (testCase.length() > 0){
+                    allMatches.put(caseNo , new TestCase(caseNo, testCase));
+                    caseNo += 1;
+                }
             }
+        }
+        else{
+            System.out.println("Something went wrong while parsing the class body.");
         }
     return allMatches;
     };
