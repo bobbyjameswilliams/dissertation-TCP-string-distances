@@ -38,6 +38,16 @@ public class Utils {
             listString.append(s).append("\n");
         }
 
+        List<String> classBody = extractClassBody(listString.toString());
+        return extractMethodBody(classBody);
+    };
+
+    /**
+     * Extracts the body of a class from a java file.
+     * @param listString
+     * @return
+     */
+    private static List<String> extractClassBody(String listString){
         //Parsing class body
         Matcher cb = Pattern.compile("\\{.*\\}",Pattern.DOTALL)
                 .matcher(listString.toString());
@@ -46,7 +56,10 @@ public class Utils {
             String testCase = cb.group().trim();
             classBody.add(testCase);
         }
+        return classBody;
+    }
 
+    public static Map<Integer, TestCase> extractMethodBody(List<String> classBody){
         Map<Integer, TestCase> allMatches = new HashMap<>();
         //Parsing function body
         if (classBody.size() == 1){
@@ -56,10 +69,8 @@ public class Utils {
 
             Matcher m = Pattern.compile("(?<recurse>\\{(([^{}]++|(?'recurse'))*)\\})")
                     .matcher(classBodyString);
-//            Matcher m = Pattern.compile("\\{((?>[^{}]++|(\\{((?>[^{}]++|(\\{((?>[^{}]++|(\\{((?>[^{}]++|(\\{((?>[^{}]++|())*)\\}))*)\\}))*)\\}))*)\\}))*)\\}")
-//                    .matcher(classBodyString);
-            int caseNo = 0;
 
+            int caseNo = 0;
             while (m.find()) {
                 String testCase = m.group().trim();
                 //Remove curly brace from beginning and end of test case.
@@ -69,13 +80,14 @@ public class Utils {
                     caseNo += 1;
                 }
             }
+            return allMatches;
         }
         else{
             System.out.println("Something went wrong while parsing the class body.");
+            return null;
         }
-    return allMatches;
-    };
 
+    }
     public static void extractMethodName(){
         //TODO implement
     };
