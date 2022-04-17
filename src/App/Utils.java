@@ -3,14 +3,16 @@ package App;
 
 import App.Models.TestCase;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 //import java.util.regex.Matcher;
 //import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 import com.florianingerl.util.regex.*;
+
+import static org.junit.Assert.assertTrue;
 
 public class Utils {
     public static List<String> readFile(String fileName){
@@ -141,4 +143,48 @@ public class Utils {
 
         return object.toString("ISO-8859-1");
     }
+
+    /**
+     * Outputs information about the prioritised test cases.
+     * @param prioritisedResults Map of prioritised results.
+     */
+    public static void outputResultsToConsole(Map<Integer, TestCase> prioritisedResults){
+        for (Map.Entry<Integer, TestCase> entry : prioritisedResults.entrySet()) {
+            int order = entry.getValue().getOrder();
+            String testData = entry.getValue().getTestData();
+            String trimmedTestData =  testData.substring(0, Math.min(testData.length(), 30));
+            int originalOrder = entry.getValue().getTestID();
+            int testDataLength = testData.length();
+
+            System.out.println(
+                    "Order: " + order  + "," +
+                    "Original Order: " + originalOrder + "," +
+                    "Length: " + testDataLength);
+                    //"Sample: " + trimmedTestData);
+        }
+    }
+
+
+    public static void outputResultsToCSV(Map<Integer,TestCase> prioritisedResults) throws IOException {
+        List<String[]> dataLines = new ArrayList<>();
+        dataLines.add(new String[]
+                { "Order","Original Order", "Case Length", "Data" });
+        for (Map.Entry<Integer, TestCase> entry : prioritisedResults.entrySet()) {
+            String order = String.valueOf(entry.getValue().getOrder());
+            String testData = entry.getValue().getTestData();
+            String originalOrder = String.valueOf(entry.getValue().getTestID());
+            String testDataLength = String.valueOf(testData.length());
+            //Add to output array
+            dataLines.add(new String[]
+                    { order ,originalOrder, testDataLength, testData});
+        }
+        //CSV output
+        CSV csv = new CSV();
+        String fileName = "./Results/" + "hello.csv";
+        csv.givenDataArray_whenConvertToCSV_thenOutputCreated(dataLines, fileName);
+    }
+
+    // CSV Utils
+
+
 }
