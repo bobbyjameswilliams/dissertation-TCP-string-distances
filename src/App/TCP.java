@@ -1,7 +1,5 @@
 package App;
 import java.io.*;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +9,6 @@ import App.Models.TestCase;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class TCP {
     public static void main(String[] args) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -23,17 +20,17 @@ public class TCP {
         Map<Integer, TestCase> parsedFile = Utils.parseTests(file);
 
         System.out.println("Generating Similarity Matrix...");
-        Method fitnessFunctionToPass = TCP.class.getMethod("NCDistance", String.class, String.class);
+        Method fitnessFunctionToPass = TCP.class.getMethod("hammingDistance", String.class, String.class);
         ArrayList<ArrayList<Object>> similarityMatrix = createSimilarityMatrix(new TCP(), parsedFile, fitnessFunctionToPass);
 
         System.out.println("Applying Fitness Function...");
         Map<Integer, TestCase> prioritisedTestSuite = averageFitnessFunction(similarityMatrix, parsedFile);
-        System.out.println("wibble");
+        Utils.outputResultsToCSV(prioritisedTestSuite);
     }
 
     //############### STRING DISTANCES ######################
 
-    public static int hammingDistance(String string1, String string2){
+    public static double hammingDistance(String string1, String string2){
         if (string1.length() < string2.length()){
             return performHammingDistance(string1, string2);
         }
@@ -45,8 +42,8 @@ public class TCP {
     /*
     Performs hamming distance. Main method for this prepares the strings and sends it to here.
      */
-    private static int performHammingDistance(String shortString, String longString){
-        int distance = 0;
+    private static double performHammingDistance(String shortString, String longString){
+        double distance = 0;
         int shortStringLength = shortString.length();
         int longStringLength = longString.length();
         //Pad the shorter string with chr(0)

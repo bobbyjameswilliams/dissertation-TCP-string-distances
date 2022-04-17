@@ -24,8 +24,8 @@ class TCPTest {
     void hammingDistanceSameString(){
         String string1 = "bobby";
         String string2 = "bobby";
-        int expectedScore = 0;
-        int actualScore = TCP.hammingDistance(string1, string2);
+        double expectedScore = 0;
+        double actualScore = TCP.hammingDistance(string1, string2);
         assertEquals(expectedScore, actualScore);
     }
 
@@ -33,8 +33,8 @@ class TCPTest {
     void hammingDistanceKName(){
         String string1 = "KAROLIN";
         String string2 = "KATHRIN";
-        int expectedScore = 3;
-        int actualScore = TCP.hammingDistance(string1, string2);
+        double expectedScore = 3;
+        double actualScore = TCP.hammingDistance(string1, string2);
         assertEquals(expectedScore, actualScore);
     }
 
@@ -42,8 +42,8 @@ class TCPTest {
     void hammingDistanceBinary(){
         String string1 = "0000";
         String string2 = "1111";
-        int expectedScore = 4;
-        int actualScore = TCP.hammingDistance(string1, string2);
+        double expectedScore = 4;
+        double actualScore = TCP.hammingDistance(string1, string2);
         assertEquals(expectedScore, actualScore);
     }
 
@@ -54,8 +54,8 @@ class TCPTest {
     void hammingDistanceExample1(){
         String string1 = "ab";
         String string2 = "abcde";
-        int expectedScore = 3;
-        int actualScore = TCP.hammingDistance(string1, string2);
+        double expectedScore = 3;
+        double actualScore = TCP.hammingDistance(string1, string2);
         assertEquals(expectedScore, actualScore);
     }
 
@@ -66,8 +66,8 @@ class TCPTest {
     void hammingDistanceExample2(){
         String string1 = "abcd";
         String string2 = "abab";
-        int expectedScore = 2;
-        int actualScore = TCP.hammingDistance(string1, string2);
+        double expectedScore = 2;
+        double actualScore = TCP.hammingDistance(string1, string2);
         assertEquals(expectedScore, actualScore);
     };
 
