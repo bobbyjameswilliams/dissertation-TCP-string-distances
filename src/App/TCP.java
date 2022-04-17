@@ -78,16 +78,7 @@ public class TCP {
     //############### FITNESS FUNCTIONS ######################
     //Polymorphic for double and int
     public static ArrayList<ArrayList<Object>> createSimilarityMatrix(Object tcpObject, Map<Integer, TestCase> testCases, Method distanceMethod) throws InvocationTargetException, IllegalAccessException {
-        /*
-        PSEUDOCODO
-        m=n=testsuite.length
-        create main_list
-        Foreach test case(0..n):
-            create list
-            Foreach test case(0..m):
-                list.add(fitnessFunction(testsuite(m),testSuite(n))
-            mainList.add(list)
-         */
+
         int testCaseCount = testCases.size();
         ArrayList<ArrayList<Object>> similarityMatrix = new ArrayList<>();
         for (int i = 0; i < testCaseCount; i++) {
@@ -95,9 +86,15 @@ public class TCP {
             for (int j = 0; j < testCaseCount; j++){
                 String testCase1 = testCases.get(i).getTestData();
                 String testCase2 = testCases.get(j).getTestData();
+                if (i == j){
+                    testCaseDiffList.add(-1);
+                }
+                else {
+                    Object stringDistance = distanceMethod.invoke(tcpObject, testCase1 , testCase2 );
+                    testCaseDiffList.add(stringDistance);
+                }
                 //System.out.println("String distance " + i + " against " + j);
-                Object stringDistance = distanceMethod.invoke(tcpObject, testCase1 , testCase2 );
-                testCaseDiffList.add(stringDistance);
+
             }
             similarityMatrix.add(testCaseDiffList);
         }
@@ -119,12 +116,14 @@ public class TCP {
         //Calculate average score
         Map<TestCase, Double> testCaseAverages = new HashMap<>();
         for (int i = 0; i < similarityMatrix.size(); i++) {
-            Double sum = 0.0;
+            double sum = 0.0;
             ArrayList<Object> testCase = similarityMatrix.get(i);
             for (Object distance : testCase){
-                sum += (Double) distance;
+                if (distance != null){
+                    sum += (Double) distance;
+                }
             }
-            double average = sum / (testCase.size() - 1) ;
+            double average = sum / (testCase.size() - 2) ;
             testCaseAverages.put(testSet.get(i), average);
         }
         return testCaseAverages;
