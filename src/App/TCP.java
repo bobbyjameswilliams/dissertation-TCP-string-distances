@@ -1,14 +1,11 @@
 package App;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import App.Models.TestCase;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 public class TCP {
     public static void main(String[] args) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -21,10 +18,11 @@ public class TCP {
 
         System.out.println("Generating Similarity Matrix...");
         Method fitnessFunctionToPass = TCP.class.getMethod("hammingDistance", String.class, String.class);
-        ArrayList<ArrayList<Object>> similarityMatrix = createSimilarityMatrix(new TCP(), parsedFile, fitnessFunctionToPass);
+        ArrayList<ArrayList<Double>> similarityMatrix = createSimilarityMatrix(new TCP(), parsedFile, fitnessFunctionToPass);
 
         System.out.println("Applying Fitness Function...");
-        Map<Integer, TestCase> prioritisedTestSuite = averageFitnessFunction(similarityMatrix, parsedFile);
+        Map<Integer, TestCase> prioritisedTestSuite = averageMethodPrioritisation(similarityMatrix, parsedFile);
+        int temp = smallestNeighbor(similarityMatrix);
         Utils.outputResultsToCSV(prioritisedTestSuite);
     }
 
@@ -77,12 +75,12 @@ public class TCP {
 
     //############### FITNESS FUNCTIONS ######################
     //Polymorphic for double and int
-    public static ArrayList<ArrayList<Object>> createSimilarityMatrix(Object tcpObject, Map<Integer, TestCase> testCases, Method distanceMethod) throws InvocationTargetException, IllegalAccessException {
+    public static ArrayList<ArrayList<Double>> createSimilarityMatrix(Object tcpObject, Map<Integer, TestCase> testCases, Method distanceMethod) throws InvocationTargetException, IllegalAccessException {
 
         int testCaseCount = testCases.size();
-        ArrayList<ArrayList<Object>> similarityMatrix = new ArrayList<>();
+        ArrayList<ArrayList<Double>> similarityMatrix = new ArrayList<>();
         for (int i = 0; i < testCaseCount; i++) {
-            ArrayList<Object> testCaseDiffList = new ArrayList<>();
+            ArrayList<Double> testCaseDiffList = new ArrayList<>();
             for (int j = 0; j < testCaseCount; j++){
                 String testCase1 = testCases.get(i).getTestData();
                 String testCase2 = testCases.get(j).getTestData();
@@ -91,7 +89,7 @@ public class TCP {
                 }
                 else {
                     Object stringDistance = distanceMethod.invoke(tcpObject, testCase1 , testCase2 );
-                    testCaseDiffList.add(stringDistance);
+                    testCaseDiffList.add((Double) stringDistance);
                 }
                 //System.out.println("String distance " + i + " against " + j);
 
@@ -101,9 +99,54 @@ public class TCP {
         return similarityMatrix;
     }
 
-    //### AVERAGE FITNESS FUNCTION ###
+    public static Map<Integer, TestCase> ledruFitnessFunctionPrioritisation(ArrayList<ArrayList<Double>> similarityMatrix, Map<Integer, TestCase> testSet){
+        /*
+        Compute the distances for each pair of test cases in T
+        Remove duplicates from T
+        Find an element t ∈ T with the maximum distance dd(t,T ),
+            T := T \{t}, P := t
+        While T is not empty
+            Find an element t ∈ T with the maximum distance dd(t,P),
+                T := T \{t}, P := P.t (t is appended to the sequence)
+        Append duplicates to P
+        return P
+         */
 
-    public static Map<Integer, TestCase> averageFitnessFunction(ArrayList<ArrayList<Object>> similarityMatrix, Map<Integer, TestCase> testSet){
+
+        return null;
+    }
+
+    private static int smallestNeighbor (ArrayList<ArrayList<Double>> similarityMatrix){
+        Map<Integer, Double> smallestDistances =  new HashMap<>();
+        for(int i = 0; i < similarityMatrix.size(); i++){
+            List<Double> testCaseNeighbors = similarityMatrix.get(i);
+            //Shallow copy of testCaseNeighbors
+            List<Double> sortedNeighbors = new ArrayList<>(testCaseNeighbors);
+            sortedNeighbors.removeAll(Collections.singleton(null));
+            Collections.sort(sortedNeighbors);
+            Double smallestDistance = sortedNeighbors.get(0);
+            smallestDistances.put(i, smallestDistance );
+        }
+        Map.Entry<Integer, Double> max = null;
+        for (Map.Entry<Integer, Double> entry : smallestDistances.entrySet()) {
+            if (max == null || max.getValue() < entry.getValue()) {
+                max = entry;
+            }
+        }
+
+        //System.out.println(min.getKey()); // 0.1
+        return max.getKey();
+    }
+
+    //### AVERAGE PRIORITISATION METHOD ###
+    /**
+     * Averages the set of test cases distances from the subject test case and ranks in
+     * descending order
+     * @param similarityMatrix calculated similarity matrix
+     * @param testSet parsed test set
+     * @return priority order
+     */
+    public static Map<Integer, TestCase> averageMethodPrioritisation(ArrayList<ArrayList<Double>> similarityMatrix, Map<Integer, TestCase> testSet){
         /*
         For every entry in the list, calculate the average and then save that as a key in a dictionary. Maybe create a
         test case class to store the data in??
@@ -112,16 +155,19 @@ public class TCP {
         return generateOrdering(testCaseAverages);
     }
 
-    private static Map<TestCase, Double> calculateAndPopulateAverages(ArrayList<ArrayList<Object>> similarityMatrix, Map<Integer, TestCase> testSet){
+    private static Map<TestCase, Double> calculateAndPopulateAverages(ArrayList<ArrayList<Double>> similarityMatrix, Map<Integer, TestCase> testSet){
         //Calculate average score
         Map<TestCase, Double> testCaseAverages = new HashMap<>();
         for (int i = 0; i < similarityMatrix.size(); i++) {
             double sum = 0.0;
-            ArrayList<Object> testCase = similarityMatrix.get(i);
+            ArrayList<Double> testCase = similarityMatrix.get(i);
             for (Object distance : testCase){
                 if (distance != null){
                     sum += (Double) distance;
                 }
+//                if ( String.valueOf(distance).equals("0")){
+//                    System.out.print("distance is " + distance);
+//                }
             }
             double average = sum / (testCase.size() - 2) ;
             testCaseAverages.put(testSet.get(i), average);
@@ -140,7 +186,7 @@ public class TCP {
         }
         return prioritisedTestSuite;
     }
-    //### RANDOM ORDERING
+    //### RANDOM ORDERING ####
     private void generateRandomOrdering(Map<Integer, TestCase> testSet)
     {
         //Generate a list of size of the test set with numbers from 0 to n-1 ascending

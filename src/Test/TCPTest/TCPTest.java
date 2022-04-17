@@ -111,7 +111,7 @@ class TCPTest {
 
         Method fitnessFunctionToPass = TCP.class.getMethod("NCDistance", String.class, String.class);
         TCP tcp = new TCP();
-        ArrayList<ArrayList<Object>> table = TCP.createSimilarityMatrix(tcp, testData, fitnessFunctionToPass);
+        ArrayList<ArrayList<Double>> table = TCP.createSimilarityMatrix(tcp, testData, fitnessFunctionToPass);
 
         int expectedResult = 12;
         int actualResult = table.size();
@@ -130,7 +130,7 @@ class TCPTest {
 
         Method fitnessFunctionToPass = TCP.class.getMethod("NCDistance", String.class, String.class);
         TCP tcp = new TCP();
-        ArrayList<ArrayList<Object>> table = TCP.createSimilarityMatrix(tcp, testData, fitnessFunctionToPass);
-        TCP.averageFitnessFunction(table, testData);
+        ArrayList<ArrayList<Double>> table = TCP.createSimilarityMatrix(tcp, testData, fitnessFunctionToPass);
+        TCP.averageMethodPrioritisation(table, testData);
     }
 }
