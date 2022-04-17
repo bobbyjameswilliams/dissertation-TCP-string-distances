@@ -87,7 +87,7 @@ public class TCP {
                 String testCase1 = testCases.get(i).getTestData();
                 String testCase2 = testCases.get(j).getTestData();
                 if (i == j){
-                    testCaseDiffList.add(-1);
+                    testCaseDiffList.add(null);
                 }
                 else {
                     Object stringDistance = distanceMethod.invoke(tcpObject, testCase1 , testCase2 );
