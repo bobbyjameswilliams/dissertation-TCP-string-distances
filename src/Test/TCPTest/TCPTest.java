@@ -71,7 +71,19 @@ class TCPTest {
         assertEquals(expectedScore, actualScore);
     }
 
-    ;
+    @Test
+    void hammingDistanceSimilarityMatrixFromLedru() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        ArrayList<ArrayList<Double>> expectedResult = TCPTestData.getCeaserCipherExampleSimilarityMatrix();
+        Map<Integer,TestCase> exampleSuite = TCPTestData.getCeasarCipherExampleSuiteLedru();
+        Method fitnessFunctionToPass = TCP.class.getMethod("hammingDistance", String.class, String.class);
+        TCP tcp = new TCP();
+        ArrayList<ArrayList<Double>> actualResult = TCP.createSimilarityMatrix(tcp, exampleSuite, fitnessFunctionToPass);
+
+        assertEquals(expectedResult,actualResult);
+
+    }
+
+
 
     //###################### TESTS FOR NCDistance() #######################
 
@@ -119,11 +131,6 @@ class TCPTest {
         int expectedResult = 12;
         int actualResult = table.size();
         assertEquals(expectedResult, actualResult);
-    }
-
-    //################  TESTS FOR manhattanDistance() ###########
-    @Test
-    void manhattanDistance() {
     }
 
     //############### TESTS FOR averageFitnessfunction() ############

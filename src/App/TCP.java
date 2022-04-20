@@ -13,6 +13,7 @@ public class TCP {
         List<String> file = Utils.readFile("./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest0.java");
         //List<String> file = Utils.readFile("./src/test.txt");
 
+
         System.out.println("Parsing File...");
         Map<Integer, TestCase> parsedFile = Utils.parseTests(file);
 
@@ -46,7 +47,6 @@ public class TCP {
      */
     private static double performHammingDistance(String shortString, String longString){
         double distance = 0;
-        int shortStringLength = shortString.length();
         int longStringLength = longString.length();
         //Pad the shorter string with chr(0)
         char pad = (char)0;
