@@ -22,12 +22,18 @@ public class TCP {
 //        String stringDistanceMethod = args[4].toUpperCase();
 
         System.out.println("Reading File...");
-        List<String> file = Utils.readFile("./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest0.java");
+        String[] fileNames = {
+                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest0.java",
+                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest1.java",
+                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest2.java",
+                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest3.java"
+        };
+        ArrayList<List<String>> files = Utils.readFiles(fileNames);
         //List<String> file = Utils.readFile("./src/test.txt");
 
 
         System.out.println("Parsing File...");
-        Map<Integer, TestCase> parsedFile = Utils.parseTests(file);
+        Map<Integer, TestCase> parsedFile = Utils.parseTests(files);
 
         Set<Integer> priorityOrder = generateRandomOrdering(parsedFile);
         Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);

@@ -30,6 +30,15 @@ public class Utils {
         return fileLines;
     }
 
+    public static ArrayList<List<String>> readFiles (String[] fileNames){
+        ArrayList<List<String>> filesLines = new ArrayList<>();
+        for (String fileName : fileNames){
+            List<String> fileLines = readFile(fileName);
+            filesLines.add(fileLines);
+        }
+        return filesLines;
+    }
+
     public static Map<Integer, TestCase> parseTests(List<String> file){
         StringBuilder listString = new StringBuilder();
 
@@ -40,6 +49,25 @@ public class Utils {
 
         List<String> classBody = extractClassBody(listString.toString());
         return extractMethodBody(classBody);
+    };
+
+    public static Map<Integer, TestCase> parseTests(ArrayList<List<String>> files){
+        List<StringBuilder> nlAppendedFile = new ArrayList<>();
+        for (List<String> file : files){
+            StringBuilder listString = new StringBuilder();
+            for (String s : file)
+            {
+                listString.append(s).append("\n");
+            }
+            nlAppendedFile.add(listString);
+        }
+        List<String> classBodies = new ArrayList<>();
+        for (StringBuilder file : nlAppendedFile){
+            List<String> classBody = extractClassBody(file.toString());
+            classBodies.addAll(classBody);
+        }
+
+        return extractMethodBody(classBodies);
     };
 
     /**
@@ -88,6 +116,7 @@ public class Utils {
         }
 
     }
+
     public static void extractMethodName(){
         //TODO implement
     };
