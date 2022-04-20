@@ -163,23 +163,23 @@ public class Utils {
     }
 
 
-    public static void outputResultsToCSV(Map<Integer,TestCase> prioritisedResults) throws IOException {
+    public static void outputResultsToCSV(Map<Integer,TestCase> prioritisedResults, String fileName) throws IOException {
         List<String[]> dataLines = new ArrayList<>();
         dataLines.add(new String[]
-                { "Order","Original Order", "Case Length", "Data" });
+                { "Order","testID", "Case Length", "Data" });
         for (Map.Entry<Integer, TestCase> entry : prioritisedResults.entrySet()) {
             String order = String.valueOf(entry.getValue().getOrder());
             String testData = entry.getValue().getTestData();
-            String originalOrder = String.valueOf(entry.getValue().getTestID());
+            String testID = String.valueOf(entry.getValue().getTestID());
             String testDataLength = String.valueOf(testData.length());
             //Add to output array
             dataLines.add(new String[]
-                    { order ,originalOrder, testDataLength, testData});
+                    { order ,testID, testDataLength, testData});
         }
         //CSV output
         CSV csv = new CSV();
-        String fileName = "./Results/" + "hello.csv";
-        csv.givenDataArray_whenConvertToCSV_thenOutputCreated(dataLines, fileName);
+        String filePath = "./Results/" + fileName + ".csv";
+        csv.givenDataArray_whenConvertToCSV_thenOutputCreated(dataLines, filePath);
     }
 
     // CSV Utils
