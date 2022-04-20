@@ -146,28 +146,33 @@ class TCPTest {
 
     //############## TESTS FOR closestDistance()
 
-    @Test
-    void testClosestDistance() {
-        // Test Data
-        ArrayList<ArrayList<Double>> ledruEditSimilarityMatrix = TCPTestData.getEditDistanceLedruExampleSimilarityMatrix();
-        ArrayList<Double> ajacencyListTC2 = ledruEditSimilarityMatrix.get(2);
+//    @Test
+//    void testClosestDistance() {
+//        // Test Data
+//        ArrayList<ArrayList<Double>> ledruEditSimilarityMatrix = TCPTestData.getEditDistanceLedruExampleSimilarityMatrix();
+//        ArrayList<Double> ajacencyListTC2 = ledruEditSimilarityMatrix.get(2);
+//
+//        Integer[] pData = {6,1};
+//        Set<Integer> p = new HashSet<>(Arrays.asList(pData));
+//        Double expectedResult = 7.0;
+//        Double actualResult = TCP.closestDistance(ajacencyListTC2, p);
+//        assertEquals(expectedResult, actualResult);
+//    }
+//
+//
+//    @Test
+//    void testSmallestNeighbor() {
+//        ArrayList<ArrayList<Double>> ledruEditSimilarityMatrix = TCPTestData.getEditDistanceLedruExampleSimilarityMatrix();
+//        Integer expectedResult = 6;
+//        Integer actualResult = TCP.smallestNeighbor(ledruEditSimilarityMatrix);
+//
+//        assertEquals(expectedResult,actualResult);
+//    }
 
-        Integer[] pData = {6,1};
-        Set<Integer> p = new HashSet<>(Arrays.asList(pData));
-        Double expectedResult = 7.0;
-        Double actualResult = TCP.closestDistance(ajacencyListTC2, p);
-        assertEquals(expectedResult, actualResult);
-    }
-
-    @Test
-    void testSmallestNeighbor() {
-        ArrayList<ArrayList<Double>> ledruEditSimilarityMatrix = TCPTestData.getEditDistanceLedruExampleSimilarityMatrix();
-        Integer expectedResult = 6;
-        Integer actualResult = TCP.smallestNeighbor(ledruEditSimilarityMatrix);
-
-        assertEquals(expectedResult,actualResult);
-    }
-
+    /**
+     * Tests the ledru fitness function against the test data available in Prioritizing test cases with string distances
+     * ledru et al
+     */
     @Test
     void testLedrufitnessfunctionEditTestData() {
         ArrayList<ArrayList<Double>> ledruEditSimilarityMatrix = TCPTestData.getEditDistanceLedruExampleSimilarityMatrix();
@@ -184,8 +189,24 @@ class TCPTest {
         assertEquals(expectedResult,actualResult);
     }
 
+    /**
+     * Tests that when converting the ordering to an ordered test suite, order is preserved.
+     */
     @Test
-    void testorderingToSuitePreservesOrdering(){
+    void testOrderingToSuitePreservesOrdering(){
+        ArrayList<ArrayList<Double>> ceaserSimilarityMatrix = TCPTestData.getCeaserCipherExampleSimilarityMatrix();
+        Map<Integer, TestCase> ceasarTestSuite = TCPTestData.getCeasarCipherExampleSuiteLedru();
 
+        Set<Integer> expectedResult = TCP.ledruFitnessFunctionPrioritisation(ceaserSimilarityMatrix);
+
+        Map<Integer, TestCase> prioritisedTestSuite = TCP.orderingToSuite(expectedResult,ceasarTestSuite);
+        Set<Integer> actualResult = new LinkedHashSet<>();
+
+        for (Map.Entry<Integer, TestCase> entry : prioritisedTestSuite.entrySet()) {
+            Integer order = entry.getValue().getOrder();
+            actualResult.add(order);
+        }
+
+        assertEquals(expectedResult, actualResult);
     }
 }
