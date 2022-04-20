@@ -21,9 +21,12 @@ public class TCP {
         ArrayList<ArrayList<Double>> similarityMatrix = createSimilarityMatrix(new TCP(), parsedFile, fitnessFunctionToPass);
 
         System.out.println("Applying Fitness Function...");
-        Map<Integer, TestCase> prioritisedTestSuite = averageMethodPrioritisation(similarityMatrix, parsedFile);
-        int temp = smallestNeighbor(similarityMatrix);
-        Utils.outputResultsToCSV(prioritisedTestSuite);
+
+        Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
+        Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
+        //Map<Integer, TestCase> prioritisedTestSuite = averageMethodPrioritisation(similarityMatrix, parsedFile);
+        Utils.outputResultsToCSV(prioritisedTestSuite, "ledruFitnessFuncTest");
+        System.out.println("wibble");
     }
 
     //############### STRING DISTANCES ######################
@@ -193,6 +196,18 @@ public class TCP {
         }
         assert max != null;
         return max.getKey();
+    }
+
+    private static HashMap<Integer, TestCase> orderingToSuite(Set<Integer> ordering, Map<Integer, TestCase> testSuite){
+        HashMap<Integer, TestCase> prioritisedSuite = new LinkedHashMap<>();
+        int newID = 0;
+        for (Integer testID : ordering){
+            TestCase testCase = testSuite.get(testID);
+            testCase.setOrder(newID);
+            prioritisedSuite.put(newID, testCase);
+            newID += 1;
+        }
+        return prioritisedSuite;
     }
 
 

@@ -176,4 +176,9 @@ class TCPTest {
         Set<Integer> actualResult = TCP.ledruFitnessFunctionPrioritisation(ledruEditSimilarityMatrix);
         assertEquals(expectedResult,actualResult);
     }
+
+    @Test
+    void testorderingToSuitePreservesOrdering(){
+
+    }
 }
