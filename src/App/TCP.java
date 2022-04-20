@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 
 public class TCP {
     public static void main(String[] args) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+
         System.out.println("Reading File...");
         List<String> file = Utils.readFile("./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest0.java");
         //List<String> file = Utils.readFile("./src/test.txt");
@@ -17,17 +18,20 @@ public class TCP {
         System.out.println("Parsing File...");
         Map<Integer, TestCase> parsedFile = Utils.parseTests(file);
 
-        System.out.println("Generating Similarity Matrix...");
-        Method fitnessFunctionToPass = TCP.class.getMethod("hammingDistance", String.class, String.class);
-        ArrayList<ArrayList<Double>> similarityMatrix = createSimilarityMatrix(new TCP(), parsedFile, fitnessFunctionToPass);
-
-        System.out.println("Applying Fitness Function...");
-
-        //Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
-        Set<Integer> priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
+        Set<Integer> priorityOrder = generateRandomOrdering(parsedFile);
         Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
 
-        Utils.outputResultsToCSV(prioritisedTestSuite, "avgFitnessFuncTest1");
+//        System.out.println("Generating Similarity Matrix...");
+//        Method fitnessFunctionToPass = TCP.class.getMethod("hammingDistance", String.class, String.class);
+//        ArrayList<ArrayList<Double>> similarityMatrix = createSimilarityMatrix(new TCP(), parsedFile, fitnessFunctionToPass);
+//
+//        System.out.println("Applying Fitness Function...");
+//
+//        //Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
+//        Set<Integer> priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
+//        Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
+//
+//        Utils.outputResultsToCSV(prioritisedTestSuite, "avgFitnessFuncTest1");
         System.out.println("wibble");
     }
 
@@ -260,10 +264,15 @@ public class TCP {
     }
 
     //### RANDOM ORDERING ####
-    private void generateRandomOrdering(Map<Integer, TestCase> testSet)
-    {
-        //Generate a list of size of the test set with numbers from 0 to n-1 ascending
-        //Pick a random entry from 0 to n, pop that entry and repeat.
+    private static Set<Integer> generateRandomOrdering(Map<Integer, TestCase> testSet) {
+        List<Integer> randomOrderList = new ArrayList<>();
+        for (int i = 0; i < testSet.size(); i++){
+            randomOrderList.add(i);
+        }
+        Collections.shuffle(randomOrderList);
+        Set<Integer> randomOrderSet = new LinkedHashSet<>(randomOrderList);
+        assert randomOrderSet.size() == randomOrderList.size();
+        return randomOrderSet;
     }
 
     private void evaluateTestSuite(){
