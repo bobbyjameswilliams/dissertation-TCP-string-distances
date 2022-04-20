@@ -22,10 +22,11 @@ public class TCP {
 
         System.out.println("Applying Fitness Function...");
 
-        Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
+        //Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
+        Set<Integer> priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
         Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
-        //Map<Integer, TestCase> prioritisedTestSuite = averageMethodPrioritisation(similarityMatrix, parsedFile);
-        Utils.outputResultsToCSV(prioritisedTestSuite, "ledruFitnessFuncTest");
+
+        Utils.outputResultsToCSV(prioritisedTestSuite, "avgFitnessFuncTest1");
         System.out.println("wibble");
     }
 
