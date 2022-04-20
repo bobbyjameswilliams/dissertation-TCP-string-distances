@@ -170,8 +170,8 @@ class TCPTest {
 //    }
 
     /**
-     * Tests the ledru fitness function against the test data available in Prioritizing test cases with string distances
-     * ledru et al
+     * Tests the ledru fitness function against the test data available in \"Prioritizing test cases with string distances
+     * ledru et al\"
      */
     @Test
     void testLedrufitnessfunctionEditTestData() {
