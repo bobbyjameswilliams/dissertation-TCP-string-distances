@@ -162,17 +162,17 @@ public class TCP {
     }
 
     /**
-     * Given a test cases ajacency list and the permutation p, returns the closest distance from the test case to the
+     * Given a test cases adjacency list and the permutation p, returns the closest distance from the test case to the
      * permutation p
      *
-     * @param ajacencyList ajacency list of test case t
+     * @param adjacencyList adjacency list of test case t
      * @param p permutation
      * @return distance as double
      */
-    public static Double closestDistance(ArrayList<Double> ajacencyList, Set<Integer> p){
+    public static Double closestDistance(ArrayList<Double> adjacencyList, Set<Integer> p){
         List<Double> distancesToP = new ArrayList<>();
         for (int pIndex : p) {
-            double distanceToP = ajacencyList.get(pIndex);
+            double distanceToP = adjacencyList.get(pIndex);
             distancesToP.add(distanceToP);
         }
         Collections.sort(distancesToP);
@@ -182,8 +182,8 @@ public class TCP {
     private static Integer dd(ArrayList<ArrayList<Double>> similarityMatrix, Set<Integer> t, Set<Integer> p ){
         HashMap<Integer,Double> distances = new HashMap<>();
         for (Integer index : t) {
-            ArrayList<Double> ajacencyList = similarityMatrix.get(index);
-            Double distance = closestDistance(ajacencyList, p);
+            ArrayList<Double> adjacencyList = similarityMatrix.get(index);
+            Double distance = closestDistance(adjacencyList, p);
             distances.put(index,distance);
         }
         //return the index with the largest distance.
@@ -211,29 +211,6 @@ public class TCP {
     }
 
 
-//    private static int dd (ArrayList<ArrayList<Double>> similarityMatrix, ArrayList<Integer> t, ArrayList<Integer> p){
-//        Map<Integer, Double> smallestDistances =  new HashMap<>();
-//        for(int i = 0; i < similarityMatrix.size(); i++){
-//            List<Double> testCaseNeighbors = similarityMatrix.get(i);
-//            //Shallow copy of testCaseNeighbors
-//            List<Double> sortedNeighbors = new ArrayList<>(testCaseNeighbors);
-//            sortedNeighbors.removeAll(Collections.singleton(null));
-//            Collections.sort(sortedNeighbors);
-//            Double smallestDistance = sortedNeighbors.get(0);
-//            smallestDistances.put(i, smallestDistance );
-//        }
-//        Map.Entry<Integer, Double> max = null;
-//        for (Map.Entry<Integer, Double> entry : smallestDistances.entrySet()) {
-//            if (max == null || max.getValue() < entry.getValue()) {
-//                max = entry;
-//            }
-//        }
-//
-//        //System.out.println(min.getKey()); // 0.1
-//        return max.getKey();
-//    }
-
-
     //### AVERAGE PRIORITISATION METHOD ###
     /**
      * Averages the set of test cases distances from the subject test case and ranks in
@@ -242,13 +219,13 @@ public class TCP {
      * @param testSet parsed test set
      * @return priority order
      */
-    public static Map<Integer, TestCase> averageMethodPrioritisation(ArrayList<ArrayList<Double>> similarityMatrix, Map<Integer, TestCase> testSet){
+    public static Set<Integer> averageMethodPrioritisation(ArrayList<ArrayList<Double>> similarityMatrix, Map<Integer, TestCase> testSet){
         /*
         For every entry in the list, calculate the average and then save that as a key in a dictionary. Maybe create a
         test case class to store the data in??
          */
         Map<TestCase,Double> testCaseAverages = calculateAndPopulateAverages(similarityMatrix, testSet);
-        return generateOrdering(testCaseAverages);
+        return generateAverageOrdering(testCaseAverages);
     }
 
     private static Map<TestCase, Double> calculateAndPopulateAverages(ArrayList<ArrayList<Double>> similarityMatrix, Map<Integer, TestCase> testSet){
@@ -271,16 +248,14 @@ public class TCP {
         return testCaseAverages;
     }
 
-    private static Map<Integer, TestCase> generateOrdering(Map<TestCase, Double> testCaseAverages) {
-        Map<Integer, TestCase> prioritisedTestSuite = new HashMap<>();
+    private static Set<Integer> generateAverageOrdering(Map<TestCase, Double> testCaseAverages) {
+        List<Integer> listOfPriorityOrdering = new ArrayList<>();
         Map<TestCase, Double> sortedAverages = Utils.sortMapByValue(testCaseAverages);
-        int counter = testCaseAverages.size() - 1;
         for (Map.Entry<TestCase, Double> entry : sortedAverages.entrySet()) {
-            entry.getKey().setOrder(counter);
-            prioritisedTestSuite.put(counter, entry.getKey());
-            counter -= 1;
+            listOfPriorityOrdering.add(entry.getKey().getTestID());
         }
-        return prioritisedTestSuite;
+        Collections.reverse(listOfPriorityOrdering);
+        return new LinkedHashSet<>(listOfPriorityOrdering);
     }
     //### RANDOM ORDERING ####
     private void generateRandomOrdering(Map<Integer, TestCase> testSet)
