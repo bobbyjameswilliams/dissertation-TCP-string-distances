@@ -258,6 +258,7 @@ public class TCP {
         Collections.reverse(listOfPriorityOrdering);
         return new LinkedHashSet<>(listOfPriorityOrdering);
     }
+
     //### RANDOM ORDERING ####
     private void generateRandomOrdering(Map<Integer, TestCase> testSet)
     {
