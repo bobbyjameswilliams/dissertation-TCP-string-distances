@@ -9,6 +9,17 @@ import java.lang.reflect.Method;
 
 public class TCP {
     public static void main(String[] args) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        //args[0] is the test suite location
+        //args[1] is the output method [csv, console]
+        //args[2] is output path
+        //args[3] is the prioritisation method
+        //args[4] is the string distance method
+
+//        String testSuiteLocation = args[0];
+//        String outputMethod = args[1].toUpperCase();
+//        String outputPath = args[2].toUpperCase(Locale.ROOT);
+//        String prioritisationMethod = args[3].toUpperCase();
+//        String stringDistanceMethod = args[4].toUpperCase();
 
         System.out.println("Reading File...");
         List<String> file = Utils.readFile("./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest0.java");
