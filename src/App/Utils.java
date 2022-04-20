@@ -12,8 +12,6 @@ import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 import com.florianingerl.util.regex.*;
 
-import static org.junit.Assert.assertTrue;
-
 public class Utils {
     public static List<String> readFile(String fileName){
         List<String> fileLines = new ArrayList<String>();

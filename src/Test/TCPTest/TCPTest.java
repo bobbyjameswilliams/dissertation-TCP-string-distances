@@ -2,15 +2,15 @@ package Test.TCPTest;
 
 import App.Models.TestCase;
 import App.Utils;
+import Test.TCPTest.Data.TCPTestData;
 import org.junit.jupiter.api.Test;
 import App.TCP;
 import Test.UtilsTest.Data.UtilsTestData;
 
+import javax.print.attribute.standard.PDLOverrideSupported;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +21,7 @@ class TCPTest {
 
     //################ TESTS FOR hammingDistance() ##########################
     @Test
-    void hammingDistanceSameString(){
+    void hammingDistanceSameString() {
         String string1 = "bobby";
         String string2 = "bobby";
         double expectedScore = 0;
@@ -30,7 +30,7 @@ class TCPTest {
     }
 
     @Test
-    void hammingDistanceKName(){
+    void hammingDistanceKName() {
         String string1 = "KAROLIN";
         String string2 = "KATHRIN";
         double expectedScore = 3;
@@ -39,7 +39,7 @@ class TCPTest {
     }
 
     @Test
-    void hammingDistanceBinary(){
+    void hammingDistanceBinary() {
         String string1 = "0000";
         String string2 = "1111";
         double expectedScore = 4;
@@ -51,7 +51,7 @@ class TCPTest {
     /*
     Hamming distance using an example in `prioritising test cases with string distances`
      */
-    void hammingDistanceExample1(){
+    void hammingDistanceExample1() {
         String string1 = "ab";
         String string2 = "abcde";
         double expectedScore = 3;
@@ -63,13 +63,15 @@ class TCPTest {
     /*
     Hamming distance using an example in `prioritising test cases with string distances`
      */
-    void hammingDistanceExample2(){
+    void hammingDistanceExample2() {
         String string1 = "abcd";
         String string2 = "abab";
         double expectedScore = 2;
         double actualScore = TCP.hammingDistance(string1, string2);
         assertEquals(expectedScore, actualScore);
-    };
+    }
+
+    ;
 
     //###################### TESTS FOR NCDistance() #######################
 
@@ -80,7 +82,7 @@ class TCPTest {
         List<String> testSuiteData = UtilsTestData.getTestSuiteDataInLines();
         Map<Integer, TestCase> listOfTestCases = Utils.parseTests(testSuiteData);
 
-        String testCase1 =  listOfTestCases.get(0).getTestData();
+        String testCase1 = listOfTestCases.get(0).getTestData();
         String testCase2 = listOfTestCases.get(1).getTestData();
         double expectedScore = 0;
         double actualScore = TCP.NCDistance(testCase1, testCase2);
@@ -96,12 +98,13 @@ class TCPTest {
         double actualScore = TCP.NCDistance(string1, string2);
         assertEquals(expectedScore, actualScore);
     }
+
     @Test
-    void calculateStringDistance(){
+    void calculateStringDistance() {
     }
 
     @Test
-    void prioritiseTestCases(){
+    void prioritiseTestCases() {
 
     }
 
@@ -120,7 +123,7 @@ class TCPTest {
 
     //################  TESTS FOR manhattanDistance() ###########
     @Test
-    void manhattanDistance(){
+    void manhattanDistance() {
     }
 
     //############### TESTS FOR averageFitnessfunction() ############
@@ -132,5 +135,45 @@ class TCPTest {
         TCP tcp = new TCP();
         ArrayList<ArrayList<Double>> table = TCP.createSimilarityMatrix(tcp, testData, fitnessFunctionToPass);
         TCP.averageMethodPrioritisation(table, testData);
+    }
+
+    //############## TESTS FOR closestDistance()
+
+    @Test
+    void testClosestDistance() {
+        // Test Data
+        ArrayList<ArrayList<Double>> ledruEditSimilarityMatrix = TCPTestData.getEditDistanceLedruExampleSimilarityMatrix();
+        ArrayList<Double> ajacencyListTC2 = ledruEditSimilarityMatrix.get(2);
+
+        Integer[] pData = {6,1};
+        Set<Integer> p = new HashSet<>(Arrays.asList(pData));
+        Double expectedResult = 7.0;
+        Double actualResult = TCP.closestDistance(ajacencyListTC2, p);
+        assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    void testSmallestNeighbor() {
+        ArrayList<ArrayList<Double>> ledruEditSimilarityMatrix = TCPTestData.getEditDistanceLedruExampleSimilarityMatrix();
+        Integer expectedResult = 6;
+        Integer actualResult = TCP.smallestNeighbor(ledruEditSimilarityMatrix);
+
+        assertEquals(expectedResult,actualResult);
+    }
+
+    @Test
+    void testLedrufitnessfunctionEditTestData() {
+        ArrayList<ArrayList<Double>> ledruEditSimilarityMatrix = TCPTestData.getEditDistanceLedruExampleSimilarityMatrix();
+
+        Set<Integer> expectedResult = new LinkedHashSet<>();
+        expectedResult.add(6);
+        expectedResult.add(1);
+        expectedResult.add(5);
+        expectedResult.add(2);
+        expectedResult.add(3);
+        expectedResult.add(0);
+        expectedResult.add(4);
+        Set<Integer> actualResult = TCP.ledruFitnessFunctionPrioritisation(ledruEditSimilarityMatrix);
+        assertEquals(expectedResult,actualResult);
     }
 }
