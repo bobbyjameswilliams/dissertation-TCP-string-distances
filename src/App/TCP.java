@@ -137,7 +137,7 @@ public class TCP {
         return p;
     }
 
-    public static int smallestNeighbor (ArrayList<ArrayList<Double>> similarityMatrix){
+    private static int smallestNeighbor (ArrayList<ArrayList<Double>> similarityMatrix){
         Map<Integer, Double> smallestDistances =  new HashMap<>();
         for(int i = 0; i < similarityMatrix.size(); i++){
             List<Double> testCaseNeighbors = similarityMatrix.get(i);
@@ -170,7 +170,7 @@ public class TCP {
      * @param p permutation
      * @return distance as double
      */
-    public static Double closestDistance(ArrayList<Double> adjacencyList, Set<Integer> p){
+    private static Double closestDistance(ArrayList<Double> adjacencyList, Set<Integer> p){
         List<Double> distancesToP = new ArrayList<>();
         for (int pIndex : p) {
             double distanceToP = adjacencyList.get(pIndex);
@@ -199,7 +199,7 @@ public class TCP {
         return max.getKey();
     }
 
-    private static HashMap<Integer, TestCase> orderingToSuite(Set<Integer> ordering, Map<Integer, TestCase> testSuite){
+    public static HashMap<Integer, TestCase> orderingToSuite(Set<Integer> ordering, Map<Integer, TestCase> testSuite){
         HashMap<Integer, TestCase> prioritisedSuite = new LinkedHashMap<>();
         int newID = 0;
         for (Integer testID : ordering){
