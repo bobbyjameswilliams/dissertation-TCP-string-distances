@@ -48,10 +48,22 @@ public class Utils {
         }
 
         List<String> classBody = extractClassBody(listString.toString());
-        return extractMethodBody(classBody);
-    };
+
+        //Parsing function body
+        if (classBody.size() == 1) {
+            String classBodyString = classBody.get(0);
+            //trimming off the curly braces.
+            classBodyString = classBodyString.substring(1, classBodyString.length() - 1);
+            return extractMethodBody(classBodyString);
+        }
+        else {
+            System.out.println("Something went wrong while parsing the class body.");
+            return null;
+        }
+    }
 
     public static Map<Integer, TestCase> parseTests(ArrayList<List<String>> files){
+
         List<StringBuilder> nlAppendedFile = new ArrayList<>();
         for (List<String> file : files){
             StringBuilder listString = new StringBuilder();
@@ -67,8 +79,14 @@ public class Utils {
             classBodies.addAll(classBody);
         }
 
-        return extractMethodBody(classBodies);
-    };
+
+        String concatClassBodies = "";
+        for (String classBody : classBodies){
+            classBody= classBody.substring(1, classBody.length() - 1);
+            concatClassBodies =  concatClassBodies.concat(classBody);
+        }
+        return extractMethodBody(concatClassBodies);
+    }
 
     /**
      * Extracts the body of a class from a java file.
@@ -87,34 +105,22 @@ public class Utils {
         return classBody;
     }
 
-    public static Map<Integer, TestCase> extractMethodBody(List<String> classBody){
+    public static Map<Integer, TestCase> extractMethodBody(String classBody){
         Map<Integer, TestCase> allMatches = new HashMap<>();
-        //Parsing function body
-        if (classBody.size() == 1){
-            String classBodyString = classBody.get(0);
-            //trimming off the curly braces.
-            classBodyString = classBodyString.substring(1, classBodyString.length() - 1);
+        Matcher m = Pattern.compile("(?<recurse>\\{(([^{}]++|(?'recurse'))*)\\})")
+                .matcher(classBody);
 
-            Matcher m = Pattern.compile("(?<recurse>\\{(([^{}]++|(?'recurse'))*)\\})")
-                    .matcher(classBodyString);
-
-            int caseNo = 0;
-            while (m.find()) {
-                String testCase = m.group().trim();
-                //Remove curly brace from beginning and end of test case.
-                testCase = testCase.substring(1, testCase.length() - 1).trim();
-                if (testCase.length() > 0){
-                    allMatches.put(caseNo , new TestCase(caseNo, testCase));
-                    caseNo += 1;
-                }
+        int caseNo = 0;
+        while (m.find()) {
+            String testCase = m.group().trim();
+            //Remove curly brace from beginning and end of test case.
+            testCase = testCase.substring(1, testCase.length() - 1).trim();
+            if (testCase.length() > 0){
+                allMatches.put(caseNo , new TestCase(caseNo, testCase));
+                caseNo += 1;
             }
-            return allMatches;
         }
-        else{
-            System.out.println("Something went wrong while parsing the class body.");
-            return null;
-        }
-
+        return allMatches;
     }
 
     public static void extractMethodName(){

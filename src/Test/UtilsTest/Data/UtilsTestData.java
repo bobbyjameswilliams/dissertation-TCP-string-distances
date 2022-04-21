@@ -13,6 +13,7 @@ import java.util.Map;
 public class UtilsTestData {
     // TEST DATA FOR readFile()
     public static final String testReadFilePath = "./src/Test/UtilsTest/Data/readFile/test.txt";
+    public static final String testReadFilePath1 = "./src/Test/UtilsTest/Data/readFile/test1.txt";
     public static final int testReadFileLineCount = 9;
     public static final String testReadFileFirstLine = "package Test.Data;";
 
