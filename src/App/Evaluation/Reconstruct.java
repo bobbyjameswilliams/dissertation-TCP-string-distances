@@ -3,10 +3,7 @@ package App.Evaluation;
 import App.Models.TestCase;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 
 
 public class Reconstruct {
@@ -16,21 +13,30 @@ public class Reconstruct {
         return null;
     }
 
-    public static void reconstruct(HashMap<Integer, TestCase> suite, String header, String methodDefinition) {
+    public static List<String> reconstruct(Map<Integer, TestCase> suite, String header, int testsPerFile) {
 
-        while (suite.size() > 0){
-            //Split it out into groups of 500 and send off the batches to generateFile
+        int suiteSize = suite.size();
+        List<String> files = new ArrayList<>();
+        Map<Integer, TestCase> apportionedSuite = new LinkedHashMap<>();
+        for (Map.Entry<Integer, TestCase> testCase : suite.entrySet()) {
+            TestCase testObject = testCase.getValue();
+            apportionedSuite.put(testCase.getKey(), testObject);
+            if ((testObject.getOrder() + 1) % testsPerFile == 0){
+                files.add(generateFile(null, null, apportionedSuite, header, suiteSize));
+                apportionedSuite.clear();
+            }
         }
+        files.add(generateFile(null, null, apportionedSuite, header, suiteSize));
+        return files;
     }
 
     public static String generateFile(String fileName,
                                     Integer fileNumber,
                                     Map<Integer, TestCase> data,
-                                    String header) {
+                                    String header, int suiteSize) {
         StringBuilder document = new StringBuilder();
         //Add header
         document.append(header);
-        int suiteSize = data.size();
         for (Map.Entry<Integer, TestCase> testCase : data.entrySet()) {
             TestCase testCaseObject = testCase.getValue();
             String methodDefinition = generateMethodDefinition(suiteSize, (testCaseObject.getOrder() + 1));
@@ -39,7 +45,7 @@ public class Reconstruct {
             document.append("\t").append(testCaseObject.getTestData());
             document.append("\n    }\n");
         }
-        document.append("\n}\n");
+        document.append("}\n");
         return String.valueOf(document);
     }
 

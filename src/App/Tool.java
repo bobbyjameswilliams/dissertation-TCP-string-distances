@@ -5,12 +5,13 @@ import java.util.*;
 
 import App.Models.TestCase;
 import App.TCP.DistanceMethods.DistanceProxy;
-import App.TCP.DistanceMethods.Hamming;
-import App.TCP.DistanceMethods.NCD;
 import App.Utilities.Utils;
+import App.Evaluation.Reconstruct;
 
 import java.lang.reflect.Method;
 
+import static App.Evaluation.Reconstruct.generateFile;
+import static App.Evaluation.Reconstruct.reconstruct;
 import static App.TCP.PrioritisationMethods.LedruFitness.ledruFitnessFunctionPrioritisation;
 import static App.TCP.PrioritisationMethods.WilliamsAverage.averageMethodPrioritisation;
 import static App.Utilities.Utils.printProgress;
@@ -44,12 +45,15 @@ public class Tool {
         //Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
 
 
-        Method distanceMethodToPass = DistanceProxy.class.getMethod("NCDistance", String.class, String.class);
+        Method distanceMethodToPass = DistanceProxy.class.getMethod("hammingDistance", String.class, String.class);
         ArrayList<ArrayList<Double>> similarityMatrix = createSimilarityMatrix(new Tool(), parsedFile, distanceMethodToPass);
 
         //Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
         Set<Integer> priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
         Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
+
+        List<String> x = reconstruct(prioritisedTestSuite, Reconstruct.generateClassDefintion(0), 500);
+
 
         Utils.outputResultsToCSV(prioritisedTestSuite, "CLI600_All_AVG_Hamming");
 

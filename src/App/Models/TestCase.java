@@ -5,6 +5,7 @@ public class TestCase {
 
     private final int testID;
     private final String testData;
+    //private final String originalTestData;
     private int order;
 
     public TestCase(int testID, String testData) {
