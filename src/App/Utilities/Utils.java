@@ -221,5 +221,11 @@ public class Utils {
         System.out.print("Progress: "+ numerator + " / " + denominator + "\r");
     }
 
+    public static void printSaveString(String filePath, String data) throws FileNotFoundException {
+        PrintWriter out = new PrintWriter(filePath);
+        out.print(data);
+        out.close();
+    }
+
 
 }

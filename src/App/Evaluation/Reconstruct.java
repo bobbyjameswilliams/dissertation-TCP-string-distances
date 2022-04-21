@@ -1,8 +1,11 @@
 package App.Evaluation;
 
 import App.Models.TestCase;
+import App.Utilities.Utils;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 
 
@@ -22,17 +25,15 @@ public class Reconstruct {
             TestCase testObject = testCase.getValue();
             apportionedSuite.put(testCase.getKey(), testObject);
             if ((testObject.getOrder() + 1) % testsPerFile == 0){
-                files.add(generateFile(null, null, apportionedSuite, header, suiteSize));
+                files.add(generateFile(apportionedSuite, header, suiteSize));
                 apportionedSuite.clear();
             }
         }
-        files.add(generateFile(null, null, apportionedSuite, header, suiteSize));
+        files.add(generateFile(apportionedSuite, header, suiteSize));
         return files;
     }
 
-    public static String generateFile(String fileName,
-                                    Integer fileNumber,
-                                    Map<Integer, TestCase> data,
+    public static String generateFile(Map<Integer, TestCase> data,
                                     String header, int suiteSize) {
         StringBuilder document = new StringBuilder();
         //Add header
@@ -42,7 +43,7 @@ public class Reconstruct {
             String methodDefinition = generateMethodDefinition(suiteSize, (testCaseObject.getOrder() + 1));
             document.append(methodDefinition);
             document.append("\n");
-            document.append("\t").append(testCaseObject.getTestData());
+            document.append("        ").append(testCaseObject.getTestData());
             document.append("\n    }\n");
         }
         document.append("}\n");
@@ -85,8 +86,40 @@ public class Reconstruct {
         return header;
     }
 
-    public static void saveFiles(String file){
+    public static void saveTestFiles(List<String> files) throws FileNotFoundException {
+        String headerFile = generateHeaderFile(files.size());
+        String directory = "./ExportedTestSuites/";
+        String headerFilePath = directory + "RegressionTest.java";
+        Utils.printSaveString(headerFilePath, headerFile);
 
+        for (int i = 0; i < files.size(); i++){
+            String fileName = "RegressionTest" + (i) + ".java";
+            String filePath = directory + fileName;
+            Utils.printSaveString(filePath, files.get(i));
+        }
+    }
+
+    public static String generateHeaderFile(int fileCount){
+
+        StringBuilder parameters = new StringBuilder();
+        for (int i = 0; i < fileCount; i++){
+            String stringToAdd = "";
+            if (i != fileCount - 1) {
+                parameters.append("RegressionTest").append(i).append(".class, ");
+            }
+            else {
+                parameters.append("RegressionTest").append(i).append(".class");
+            }
+        }
+
+        final String headerFileContent = "package org.apache.commons.cli;\n\n"
+                + "import org.junit.runner.RunWith;\n"
+                + "import org.junit.runners.Suite;\n\n"
+                + "@RunWith(Suite.class)\n"
+                + "@Suite.SuiteClasses({ " + parameters + " })\n"
+                + "public class RegressionTest {\n"
+                + "}\n\n";
+        return headerFileContent;
     }
 
 }

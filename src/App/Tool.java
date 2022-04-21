@@ -10,9 +10,7 @@ import App.Evaluation.Reconstruct;
 
 import java.lang.reflect.Method;
 
-import static App.Evaluation.Reconstruct.generateFile;
-import static App.Evaluation.Reconstruct.reconstruct;
-import static App.TCP.PrioritisationMethods.LedruFitness.ledruFitnessFunctionPrioritisation;
+import static App.Evaluation.Reconstruct.*;
 import static App.TCP.PrioritisationMethods.WilliamsAverage.averageMethodPrioritisation;
 import static App.Utilities.Utils.printProgress;
 
@@ -53,7 +51,7 @@ public class Tool {
         Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
 
         List<String> x = reconstruct(prioritisedTestSuite, Reconstruct.generateClassDefintion(0), 500);
-
+        saveTestFiles(x);
 
         Utils.outputResultsToCSV(prioritisedTestSuite, "CLI600_All_AVG_Hamming");
 
