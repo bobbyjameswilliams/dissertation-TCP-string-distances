@@ -1,7 +1,7 @@
 package Test.UtilsTest;
 
 import App.Models.TestCase;
-import App.Utils;
+import App.Utilities.Utils;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import static App.PrioritisationMethods.LedruFitness.ledruFitnessFunctionPrioritisation;
+import static App.TCP.PrioritisationMethods.LedruFitness.ledruFitnessFunctionPrioritisation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LedruFitness {

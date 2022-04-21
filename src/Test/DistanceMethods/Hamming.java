@@ -2,7 +2,7 @@ package Test.DistanceMethods;
 
 import org.junit.jupiter.api.Test;
 
-import static App.DistanceMethods.Hamming.hammingDistance;
+import static App.TCP.DistanceMethods.Hamming.hammingDistance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Hamming {

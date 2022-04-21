@@ -1,7 +1,7 @@
 package Test.UtilsTest.Data;
 
 import App.Models.TestCase;
-import App.Utils;
+import App.Utilities.Utils;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,7 +1,6 @@
 package Test.TCPTest.Data;
 
 import App.Models.TestCase;
-import App.TCP;
 
 import java.util.ArrayList;
 import java.util.Arrays;

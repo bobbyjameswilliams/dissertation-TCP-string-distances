@@ -1,8 +1,8 @@
 package Test.PrioritisationMethods;
 
-import App.DistanceMethods.NCD;
+import App.TCP.DistanceMethods.NCD;
 import App.Models.TestCase;
-import App.TCP;
+import App.Tool;
 import Test.UtilsTest.Data.UtilsTestData;
 import org.junit.jupiter.api.Test;
 
@@ -17,8 +17,8 @@ public class WilliamsAverage {
         Map<Integer, TestCase> testData = UtilsTestData.getCorrectlyParsedExampleTestSuite();
 
         Method fitnessFunctionToPass = NCD.class.getMethod("NCDistance", String.class, String.class);
-        TCP tcp = new TCP();
-        ArrayList<ArrayList<Double>> table = TCP.createSimilarityMatrix(tcp, testData, fitnessFunctionToPass);
-        App.PrioritisationMethods.WilliamsAverage.averageMethodPrioritisation(table, testData);
+        Tool tcp = new Tool();
+        ArrayList<ArrayList<Double>> table = Tool.createSimilarityMatrix(tcp, testData, fitnessFunctionToPass);
+        App.TCP.PrioritisationMethods.WilliamsAverage.averageMethodPrioritisation(table, testData);
     }
 }
