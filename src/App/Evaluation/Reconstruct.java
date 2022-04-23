@@ -1,6 +1,7 @@
 package App.Evaluation;
 
 import App.Models.TestCase;
+import App.Utilities.ConsoleColors;
 import App.Utilities.Utils;
 import org.junit.jupiter.api.Test;
 
@@ -91,6 +92,8 @@ public class Reconstruct {
         String directory = "./ExportedTestSuites/";
         String headerFilePath = directory + "RegressionTest.java";
         Utils.printSaveString(headerFilePath, headerFile);
+        //Output to console
+        System.out.println(ConsoleColors.BLACK + ConsoleColors.YELLOW_BACKGROUND + "Saving generated test suite to " + directory + ConsoleColors.RESET);
 
         for (int i = 0; i < files.size(); i++){
             String fileName = "RegressionTest" + (i) + ".java";
