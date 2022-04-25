@@ -26,14 +26,20 @@ public class LedruFitness {
             t.add(i);
         }
 
+
         Integer firstEntry = smallestNeighbor(similarityMatrix);
         p.add(firstEntry);
         t.remove(firstEntry);
 
         int progress = 1;
         int sMatrixSize = similarityMatrix.size();
+
         while (t.size() > 0){
+            //Show progress to console
             printProgress(progress, sMatrixSize);
+            progress += 1;
+            
+            //Loop
             Integer tToPop = dd(similarityMatrix,t,p);
             p.add(tToPop);
             t.remove(tToPop);

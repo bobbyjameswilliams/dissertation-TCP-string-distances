@@ -199,7 +199,8 @@ public class Utils {
 
     public static void outputResultsToCSV(Map<Integer,TestCase> prioritisedResults, String fileName) throws IOException {
         String filePath = "./Results/" + fileName + ".csv";
-        System.out.println("Outputting results to " + filePath);
+        System.out.println(ConsoleColors.BLACK + ConsoleColors.YELLOW_BACKGROUND + "Outputting results to " + filePath + ConsoleColors.RESET);
+
         List<String[]> dataLines = new ArrayList<>();
         dataLines.add(new String[]
                 { "Order","testID", "Case Length", "Data" });
@@ -218,7 +219,7 @@ public class Utils {
     }
 
     public static void printProgress(Integer numerator, Integer denominator ) {
-        System.out.print("Progress: "+ numerator + " / " + denominator + "\r");
+        System.out.print(ConsoleColors.GREEN_BACKGROUND + "Progress: "+ numerator + " / " + denominator + ConsoleColors.RESET + "\r");
     }
 
     public static void printSaveString(String filePath, String data) throws FileNotFoundException {
@@ -226,6 +227,7 @@ public class Utils {
         out.print(data);
         out.close();
     }
+
 
 
 }
