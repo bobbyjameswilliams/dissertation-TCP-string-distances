@@ -47,11 +47,11 @@ public class Tool {
         Method distanceMethodToPass = DistanceProxy.class.getMethod("hammingDistance", String.class, String.class);
         ArrayList<ArrayList<Double>> similarityMatrix = createSimilarityMatrix(new Tool(), parsedFile, distanceMethodToPass);
 
-        Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
-        //Set<Integer> priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
+        //Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
+        Set<Integer> priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
         Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
 
-        List<String> x = reconstruct(prioritisedTestSuite, Reconstruct.generateClassDefintion(0), 500);
+        List<String> x = reconstruct(prioritisedTestSuite, 500);
         saveTestFiles(x);
 
         Utils.outputResultsToCSV(prioritisedTestSuite, "CLI600_All_AVG_Hamming");
