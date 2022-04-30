@@ -12,7 +12,7 @@ import java.util.*;
 
 public class Reconstruct {
 
-    public static HashMap<Integer, TestCase> parseResults(List<List<String>> file){
+    public static HashMap<Integer, TestCase> resultsFileToTestSuite(List<List<String>> file){
         //List<String>
         return null;
     }
