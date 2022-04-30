@@ -96,7 +96,7 @@ public class Reconstruct {
 
     public static void saveTestFiles(List<String> files) throws FileNotFoundException {
         String headerFile = generateHeaderFile(files.size());
-        String directory = "./ExportedTestSuites/test/";
+        String directory = "./ExportedTestSuites/";
         String headerFilePath = directory + "RegressionTest.java";
         Utils.printSaveString(headerFilePath, headerFile);
         //Output to console
