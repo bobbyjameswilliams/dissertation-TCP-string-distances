@@ -94,7 +94,7 @@ public class Tool {
 
             //## Generate Similarity Matrix ##
             long startTimeSimilarityMatrix = System.nanoTime();
-            Method distanceMethodToPass = DistanceProxy.class.getMethod("hammingDistance", String.class, String.class);
+            Method distanceMethodToPass = DistanceProxy.class.getMethod("NCDistance", String.class, String.class);
             ArrayList<ArrayList<Double>> similarityMatrix = createSimilarityMatrix(new Tool(), parsedFile, distanceMethodToPass);
             long endTimeSimilarityMatrix = System.nanoTime();
             long totalSimilarityMatrixTime = (endTimeSimilarityMatrix -  startTimeSimilarityMatrix) / 1000000  ;
@@ -102,8 +102,8 @@ public class Tool {
 
             //## Generate Priority Ordering ##
             long startTimePriorityOrdering = System.nanoTime();
-            Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
-            //Set<Integer> priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
+            //Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
+            Set<Integer> priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
             Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
             long endTimePriorityOrdering = System.nanoTime();
             long totalPriorityOrderingTime = (endTimePriorityOrdering -  startTimePriorityOrdering) / 1000000  ;
