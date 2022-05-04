@@ -2,9 +2,12 @@ package App;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.time.*;
 
 import App.Models.TestCase;
+import App.SuiteInfo.CliInfo;
 import App.TCP.DistanceMethods.DistanceProxy;
+import App.Utilities.ConsoleColors;
 import App.Utilities.Utils;
 import App.Evaluation.Reconstruct;
 
@@ -30,32 +33,94 @@ public class Tool {
 //        String stringDistanceMethod = args[4].toUpperCase();
 
         System.out.println("Reading File...");
-        String[] fileNames = {
-                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest0.java",
-                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest1.java",
-                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest2.java",
-                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest3.java"
+        String[] cliFileNames = {
+                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest0.java"),
+                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest1.java"),
+                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest2.java"),
+                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest3.java"),
         };
-        ArrayList<List<String>> files = Utils.readFiles(fileNames);
-        //List<String> file = Utils.readFile("./src/test.txt");
-        Map<Integer, TestCase> parsedFile = Utils.parseTests(files);
-
-        //Set<Integer> priorityOrder = generateRandomOrdering(parsedFile);
-        //Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
 
 
-        Method distanceMethodToPass = DistanceProxy.class.getMethod("hammingDistance", String.class, String.class);
-        ArrayList<ArrayList<Double>> similarityMatrix = createSimilarityMatrix(new Tool(), parsedFile, distanceMethodToPass);
+        Boolean random = false;
 
-        Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
-        //Set<Integer> priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
-        Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
+        //TODO: tidy this up its horrendous.
+        if (random){
 
-        List<String> x = reconstruct(prioritisedTestSuite, Reconstruct.generateClassDefintion(0), 500);
-        saveTestFiles(x);
+            //## Read Test Suite
+            long startTimeFileRead = System.nanoTime();
+            ArrayList<List<String>> files = Utils.readFiles(cliFileNames);
+            long endTimeFileRead = System.nanoTime();
+            long totalFileReadTime = (endTimeFileRead -  startTimeFileRead) / 1000000  ;
+            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND + "Completed in " + totalFileReadTime + "ms" + ConsoleColors.RESET);
 
-        Utils.outputResultsToCSV(prioritisedTestSuite, "CLI600_All_AVG_Hamming");
+            //## Parse Loaded File
+            long startTimeFileParse = System.nanoTime();
+            Map<Integer, TestCase> parsedFile = Utils.parseTests(files);
+            long endTimeFileParse = System.nanoTime();
+            long totalFileParseTime = (endTimeFileParse -  startTimeFileParse) / 1000000  ;
+            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalFileParseTime + "ms" + ConsoleColors.RESET);
 
+            //## Generate Priority Ordering ##
+            long startTimePriorityOrdering = System.nanoTime();
+            Set<Integer> priorityOrder = generateRandomOrdering(parsedFile);
+            Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
+            long endTimePriorityOrdering = System.nanoTime();
+            long totalPriorityOrderingTime = (endTimePriorityOrdering -  startTimePriorityOrdering) / 1000000  ;
+            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalPriorityOrderingTime + "ms" + ConsoleColors.RESET);
+
+            //## Reconstruct Test Suite ##
+            long startTimeReconstruction = System.nanoTime();
+            List<String> x = reconstruct(prioritisedTestSuite, 500);
+            saveTestFiles(x);
+            long endTimeReconstruction = System.nanoTime();
+            long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
+            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
+
+            Utils.outputResultsToCSV(prioritisedTestSuite, "CLI600_All_AVG_Hamming");
+        }
+        else{
+            //## Read Test Suite
+            long startTimeFileRead = System.nanoTime();
+            ArrayList<List<String>> files = Utils.readFiles(cliFileNames);
+            long endTimeFileRead = System.nanoTime();
+            long totalFileReadTime = (endTimeFileRead -  startTimeFileRead) / 1000000  ;
+            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND + "Completed in " + totalFileReadTime + "ms" + ConsoleColors.RESET);
+
+            //## Parse Loaded File
+            long startTimeFileParse = System.nanoTime();
+            Map<Integer, TestCase> parsedFile = Utils.parseTests(files);
+            long endTimeFileParse = System.nanoTime();
+            long totalFileParseTime = (endTimeFileParse -  startTimeFileParse) / 1000000  ;
+            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalFileParseTime + "ms" + ConsoleColors.RESET);
+
+
+            //## Generate Similarity Matrix ##
+            long startTimeSimilarityMatrix = System.nanoTime();
+            Method distanceMethodToPass = DistanceProxy.class.getMethod("NCDistance", String.class, String.class);
+            ArrayList<ArrayList<Double>> similarityMatrix = createSimilarityMatrix(new Tool(), parsedFile, distanceMethodToPass);
+            long endTimeSimilarityMatrix = System.nanoTime();
+            long totalSimilarityMatrixTime = (endTimeSimilarityMatrix -  startTimeSimilarityMatrix) / 1000000  ;
+            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalSimilarityMatrixTime + "ms" + ConsoleColors.RESET);
+
+            //## Generate Priority Ordering ##
+            long startTimePriorityOrdering = System.nanoTime();
+            //Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
+            Set<Integer> priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
+            Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
+            long endTimePriorityOrdering = System.nanoTime();
+            long totalPriorityOrderingTime = (endTimePriorityOrdering -  startTimePriorityOrdering) / 1000000  ;
+            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalPriorityOrderingTime + "ms" + ConsoleColors.RESET);
+
+            //## Reconstruct Test Suite ##
+            long startTimeReconstruction = System.nanoTime();
+            List<String> x = reconstruct(prioritisedTestSuite, 500);
+            saveTestFiles(x);
+            long endTimeReconstruction = System.nanoTime();
+            long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
+            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
+
+            Utils.outputResultsToCSV(prioritisedTestSuite, "CLI600_All_AVG_Hamming");
+        }
     }
 
     //############### FITNESS FUNCTIONS ######################
