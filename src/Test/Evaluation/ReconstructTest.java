@@ -15,7 +15,7 @@ public class ReconstructTest {
                 + "@Suite.SuiteClasses({ RegressionTest0.class, RegressionTest1.class, RegressionTest2.class, RegressionTest3.class })\n"
                 + "public class RegressionTest {\n"
                 + "}\n\n";
-        String actualResult = Reconstruct.generateHeaderFile(4);
+        String actualResult = Reconstruct.generateHeaderFileJacksonCore(4);
         assertEquals(expectedResult,actualResult);
     }
 }

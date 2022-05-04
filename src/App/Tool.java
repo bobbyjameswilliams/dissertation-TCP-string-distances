@@ -6,6 +6,7 @@ import java.time.*;
 
 import App.Models.TestCase;
 import App.SuiteInfo.CliInfo;
+import App.SuiteInfo.JacksonCoreInfo;
 import App.TCP.DistanceMethods.DistanceProxy;
 import App.Utilities.ConsoleColors;
 import App.Utilities.Utils;
@@ -33,22 +34,33 @@ public class Tool {
 //        String stringDistanceMethod = args[4].toUpperCase();
 
         System.out.println("Reading File...");
-        String[] cliFileNames = {
-                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest0.java"),
-                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest1.java"),
-                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest2.java"),
-                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest3.java"),
+//        String[] fileNames = {
+//                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest0.java"),
+//                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest1.java"),
+//                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest2.java"),
+//                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest3.java"),
+//        };
+
+        String[] fileNames = {
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/Fixed/RegressionTest0.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/Fixed/RegressionTest1.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/Fixed/RegressionTest2.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/Fixed/RegressionTest3.java"),
         };
 
 
         Boolean random = false;
+        //True for ledru, false for avg
+        Boolean ledru = false;
+        //True for hamming, false for NCD
+        Boolean hamming = true;
 
         //TODO: tidy this up its horrendous.
         if (random){
 
             //## Read Test Suite
             long startTimeFileRead = System.nanoTime();
-            ArrayList<List<String>> files = Utils.readFiles(cliFileNames);
+            ArrayList<List<String>> files = Utils.readFiles(fileNames);
             long endTimeFileRead = System.nanoTime();
             long totalFileReadTime = (endTimeFileRead -  startTimeFileRead) / 1000000  ;
             System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND + "Completed in " + totalFileReadTime + "ms" + ConsoleColors.RESET);
@@ -81,7 +93,7 @@ public class Tool {
         else{
             //## Read Test Suite
             long startTimeFileRead = System.nanoTime();
-            ArrayList<List<String>> files = Utils.readFiles(cliFileNames);
+            ArrayList<List<String>> files = Utils.readFiles(fileNames);
             long endTimeFileRead = System.nanoTime();
             long totalFileReadTime = (endTimeFileRead -  startTimeFileRead) / 1000000  ;
             System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND + "Completed in " + totalFileReadTime + "ms" + ConsoleColors.RESET);
@@ -96,7 +108,7 @@ public class Tool {
 
             //## Generate Similarity Matrix ##
             long startTimeSimilarityMatrix = System.nanoTime();
-            Method distanceMethodToPass = DistanceProxy.class.getMethod("NCDistance", String.class, String.class);
+            Method distanceMethodToPass = DistanceProxy.class.getMethod("hammingDistance", String.class, String.class);
             ArrayList<ArrayList<Double>> similarityMatrix = createSimilarityMatrix(new Tool(), parsedFile, distanceMethodToPass);
             long endTimeSimilarityMatrix = System.nanoTime();
             long totalSimilarityMatrixTime = (endTimeSimilarityMatrix -  startTimeSimilarityMatrix) / 1000000  ;
@@ -104,8 +116,15 @@ public class Tool {
 
             //## Generate Priority Ordering ##
             long startTimePriorityOrdering = System.nanoTime();
-            //Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
-            Set<Integer> priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
+
+            Set<Integer> priorityOrder;
+            if(ledru){
+                priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
+            }
+            else{
+                priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
+            }
+
             Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
             long endTimePriorityOrdering = System.nanoTime();
             long totalPriorityOrderingTime = (endTimePriorityOrdering -  startTimePriorityOrdering) / 1000000  ;
