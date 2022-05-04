@@ -12,7 +12,7 @@ import java.util.*;
 
 public class Reconstruct {
 
-    public static HashMap<Integer, TestCase> parseResults(List<List<String>> file){
+    public static HashMap<Integer, TestCase> resultsFileToTestSuite(List<List<String>> file){
         //List<String>
         return null;
     }
@@ -96,7 +96,7 @@ public class Reconstruct {
 
     public static void saveTestFiles(List<String> files) throws FileNotFoundException {
         String headerFile = generateHeaderFile(files.size());
-        String directory = "./ExportedTestSuites/test/";
+        String directory = "./ExportedTestSuites/";
         String headerFilePath = directory + "RegressionTest.java";
         Utils.printSaveString(headerFilePath, headerFile);
         //Output to console
