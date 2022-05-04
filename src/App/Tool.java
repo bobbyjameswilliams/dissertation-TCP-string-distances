@@ -5,6 +5,7 @@ import java.util.*;
 import java.time.*;
 
 import App.Models.TestCase;
+import App.SuiteInfo.CliInfo;
 import App.TCP.DistanceMethods.DistanceProxy;
 import App.Utilities.ConsoleColors;
 import App.Utilities.Utils;
@@ -32,12 +33,13 @@ public class Tool {
 //        String stringDistanceMethod = args[4].toUpperCase();
 
         System.out.println("Reading File...");
-        String[] fileNames = {
-                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest0.java",
-                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest1.java",
-                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest2.java",
-                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest3.java"
+        String[] cliFileNames = {
+                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest0.java"),
+                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest1.java"),
+                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest2.java"),
+                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest3.java"),
         };
+
 
         Boolean random = false;
 
@@ -46,7 +48,7 @@ public class Tool {
 
             //## Read Test Suite
             long startTimeFileRead = System.nanoTime();
-            ArrayList<List<String>> files = Utils.readFiles(fileNames);
+            ArrayList<List<String>> files = Utils.readFiles(cliFileNames);
             long endTimeFileRead = System.nanoTime();
             long totalFileReadTime = (endTimeFileRead -  startTimeFileRead) / 1000000  ;
             System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND + "Completed in " + totalFileReadTime + "ms" + ConsoleColors.RESET);
@@ -79,7 +81,7 @@ public class Tool {
         else{
             //## Read Test Suite
             long startTimeFileRead = System.nanoTime();
-            ArrayList<List<String>> files = Utils.readFiles(fileNames);
+            ArrayList<List<String>> files = Utils.readFiles(cliFileNames);
             long endTimeFileRead = System.nanoTime();
             long totalFileReadTime = (endTimeFileRead -  startTimeFileRead) / 1000000  ;
             System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND + "Completed in " + totalFileReadTime + "ms" + ConsoleColors.RESET);
