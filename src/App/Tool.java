@@ -60,7 +60,7 @@ public class Tool {
         };
 
 
-        Boolean random = false;
+        Boolean random = true;
         //True for ledru, false for avg
         Boolean ledru = true;
         //True for hamming, false for NCD
