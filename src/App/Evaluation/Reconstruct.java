@@ -94,7 +94,7 @@ public class Reconstruct {
 
     public static String generateClassDefinitionJacksonCore(int version){
         String className = "RegressionTest" + version;
-        final String header = "package com.fasterxml.jackson.core.util;\n\n"
+        final String header = "package org.jfree.chart.renderer.category;;\n\n"
                 + "import org.junit.FixMethodOrder;\n"
                 + "import org.junit.Test;\n"
                 + "import org.junit.runners.MethodSorters;\n\n"
@@ -114,6 +114,21 @@ public class Reconstruct {
 
         for (int i = 0; i < files.size(); i++){
             String fileName = "RegressionTest" + (i) + ".java";
+            String filePath = directory + fileName;
+            Utils.printSaveString(filePath, files.get(i));
+        }
+    }
+
+    public static void saveTestFiles2(List<String> files) throws FileNotFoundException {
+        String headerFile = generateHeaderFileJacksonCore(files.size());
+        String directory = "./ExportedTestSuites/";
+        String headerFilePath = directory + "ARegressionTest.java";
+        Utils.printSaveString(headerFilePath, headerFile);
+        //Output to console
+        System.out.println(ConsoleColors.BLACK + ConsoleColors.YELLOW_BACKGROUND + "Saving generated test suite to " + directory + ConsoleColors.RESET);
+
+        for (int i = 0; i < files.size(); i++){
+            String fileName = "ARegressionTest" + (i) + ".java";
             String filePath = directory + fileName;
             Utils.printSaveString(filePath, files.get(i));
         }
@@ -155,7 +170,7 @@ public class Reconstruct {
             }
         }
 
-        final String headerFileContent = "package com.fasterxml.jackson.core.util;\n\n"
+        final String headerFileContent = "package org.jfree.chart.renderer.category;\n\n"
                 + "import org.junit.runner.RunWith;\n"
                 + "import org.junit.runners.Suite;\n\n"
                 + "@RunWith(Suite.class)\n"

@@ -42,16 +42,27 @@ public class Tool {
 //        };
 
         String[] fileNames = {
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/Fixed/RegressionTest0.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/Fixed/RegressionTest1.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/Fixed/RegressionTest2.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/Fixed/RegressionTest3.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest0.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest1.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest2.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest3.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest4.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest5.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest6.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest7.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest8.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest9.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest10.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest11.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest12.java"),
+
+
         };
 
 
         Boolean random = false;
         //True for ledru, false for avg
-        Boolean ledru = false;
+        Boolean ledru = true;
         //True for hamming, false for NCD
         Boolean hamming = true;
 
@@ -88,7 +99,7 @@ public class Tool {
             long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
             System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
 
-            Utils.outputResultsToCSV(prioritisedTestSuite, "CLI600_All_AVG_Hamming");
+            Utils.outputResultsToCSV(prioritisedTestSuite, "Chart-1b-600-ledru-ham");
         }
         else{
             //## Read Test Suite
@@ -117,28 +128,38 @@ public class Tool {
             //## Generate Priority Ordering ##
             long startTimePriorityOrdering = System.nanoTime();
 
-            Set<Integer> priorityOrder;
-            if(ledru){
-                priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
-            }
-            else{
-                priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
-            }
+            //Set<Integer> priorityOrder;
 
-            Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
+            Set<Integer> ledPriorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
+
+
+            //Set<Integer> avgPriorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
+
+
+            Map<Integer, TestCase> ledPrioritisedTestSuite = orderingToSuite(ledPriorityOrder, parsedFile);
+           // Map<Integer, TestCase> avgPrioritisedTestSuite = orderingToSuite(avgPriorityOrder, parsedFile);
+
             long endTimePriorityOrdering = System.nanoTime();
             long totalPriorityOrderingTime = (endTimePriorityOrdering -  startTimePriorityOrdering) / 1000000  ;
             System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalPriorityOrderingTime + "ms" + ConsoleColors.RESET);
 
-            //## Reconstruct Test Suite ##
+            //## Reconstruct Test Suite led ##
             long startTimeReconstruction = System.nanoTime();
-            List<String> x = reconstruct(prioritisedTestSuite, 500);
+            List<String> x = reconstruct(ledPrioritisedTestSuite, 500);
             saveTestFiles(x);
             long endTimeReconstruction = System.nanoTime();
             long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
             System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
 
-            Utils.outputResultsToCSV(prioritisedTestSuite, "CLI600_All_AVG_Hamming");
+//            //## Reconstruct Test Suite avg ##
+//            long startTimeReconstruction1 = System.nanoTime();
+//            List<String> y = reconstruct(avgPrioritisedTestSuite, 500);
+//            saveTestFiles2(y);
+//            long endTimeReconstruction1 = System.nanoTime();
+//            long totalReconstructionTime1 = (endTimeReconstruction1 -  startTimeReconstruction1) / 1000000  ;
+//            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime1 + "ms" + ConsoleColors.RESET);
+
+            Utils.outputResultsToCSV(ledPrioritisedTestSuite, "CLI600_All_AVG_Hamming");
         }
     }
 
