@@ -12,25 +12,32 @@ import java.util.*;
 
 public class Reconstruct {
 
-    public static HashMap<Integer, TestCase> parseResults(List<List<String>> file){
+    public static HashMap<Integer, TestCase> resultsFileToTestSuite(List<List<String>> file){
         //List<String>
         return null;
     }
 
-    public static List<String> reconstruct(Map<Integer, TestCase> suite, String header, int testsPerFile) {
+    public static List<String> reconstruct(Map<Integer, TestCase> suite, int testsPerFile) {
 
+        int classNum = 0;
         int suiteSize = suite.size();
         List<String> files = new ArrayList<>();
         Map<Integer, TestCase> apportionedSuite = new LinkedHashMap<>();
         for (Map.Entry<Integer, TestCase> testCase : suite.entrySet()) {
+
+
             TestCase testObject = testCase.getValue();
             apportionedSuite.put(testCase.getKey(), testObject);
             if ((testObject.getOrder() + 1) % testsPerFile == 0){
-                files.add(generateFile(apportionedSuite, header, suiteSize));
+                String classDef = generateClassDefintion(classNum);
+                classNum += 1;
+                files.add(generateFile(apportionedSuite, classDef, suiteSize));
                 apportionedSuite.clear();
             }
         }
-        files.add(generateFile(apportionedSuite, header, suiteSize));
+        //Above code zips only when multiple of 500. This does the rest.
+        String classDef = generateClassDefintion(classNum);
+        files.add(generateFile(apportionedSuite, classDef, suiteSize));
         return files;
     }
 
