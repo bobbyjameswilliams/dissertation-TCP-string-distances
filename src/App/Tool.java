@@ -2,61 +2,109 @@ package App;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.time.*;
 
 import App.Models.TestCase;
-import App.SuiteInfo.CliInfo;
-import App.SuiteInfo.JacksonCoreInfo;
+import App.SuiteInfo.ChartInfo;
 import App.TCP.DistanceMethods.DistanceProxy;
 import App.Utilities.ConsoleColors;
 import App.Utilities.Utils;
-import App.Evaluation.Reconstruct;
+import org.apache.commons.lang3.EnumUtils;
 
 import java.lang.reflect.Method;
 
 import static App.Evaluation.Reconstruct.*;
 import static App.TCP.PrioritisationMethods.LedruFitness.ledruFitnessFunctionPrioritisation;
-import static App.TCP.PrioritisationMethods.WilliamsAverage.averageMethodPrioritisation;
 import static App.Utilities.Utils.printProgress;
 
 public class Tool {
-    public static void main(String[] args) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        //args[0] is the test suite location
-        //args[1] is the output method [csv, console]
-        //args[2] is output path
-        //args[3] is the prioritisation method
-        //args[4] is the string distance method
 
-//        String testSuiteLocation = args[0];
-//        String outputMethod = args[1].toUpperCase();
-//        String outputPath = args[2].toUpperCase(Locale.ROOT);
-//        String prioritisationMethod = args[3].toUpperCase();
-//        String stringDistanceMethod = args[4].toUpperCase();
+    enum TestSubject {
+        CLI,
+        CHART,
+    }
+    enum StringDistance{
+        HAMMING,
+        NCD
+    }
+    enum PrioritisationMethod{
+        LEDRU,
+        AVG,
+        RANDOM
+    }
+    public static void main(String[] args) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Scanner scanner = new Scanner(System.in);
+        //Config variables
+        TestSubject subjectProgram;
+        StringDistance distanceMethod;
+        PrioritisationMethod prioritisationMethod;
+        int numOfFiles;
+        Boolean random = false;
+
+        System.out.println("TCP tool using string distances.");
+
+
+        //User input for target program
+        System.out.println("What is your target program?");
+
+
+            //Inner loop 1 for choosing number of files to read in.
+            while (true) {
+                System.out.println("Options:");
+                for (TestSubject item : TestSubject.values()) {
+                    System.out.print(ConsoleColors.PURPLE + item + " " + ConsoleColors.RESET);
+                }
+                try {
+                    String subjectProgramFromUser = scanner.nextLine().toUpperCase();
+                    if (EnumUtils.isValidEnum(TestSubject.class, subjectProgramFromUser)) {
+                        subjectProgram = TestSubject.valueOf(subjectProgramFromUser);
+                        break;
+                    } else {
+                        System.out.println(ConsoleColors.RED + "Incorrect entry. Please try again." + ConsoleColors.RESET);
+                    }
+                } catch (Exception e) {
+                    System.out.println(ConsoleColors.RED + "Something went wrong. Please try again." + ConsoleColors.RESET);
+                }
+            }
+
+
+
+        fileInputOuter:
+        while(true) {
+            // Number of files to read in
+            System.out.println("How many files would you like to read in?\n" +
+                    ConsoleColors.YELLOW + "Note: they need to be called \"RegressionTest<num>\" with the header being called just \"RegressionTest\""
+                    + ConsoleColors.RESET);
+            while (true) {
+                try {
+                    numOfFiles = scanner.nextInt();
+                    break;
+                } catch (Exception e) {
+                    System.out.println(ConsoleColors.RED + "Something went wrong. Please input an integer." + ConsoleColors.RESET);
+                }
+            }
+            
+            // Path of files.
+            while(true){
+
+            }
+        }
 
         System.out.println("Reading File...");
-//        String[] fileNames = {
-//                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest0.java"),
-//                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest1.java"),
-//                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest2.java"),
-//                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest3.java"),
-//        };
 
         String[] fileNames = {
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest0.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest1.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest2.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest3.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest4.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest5.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest6.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest7.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest8.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest9.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest10.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest11.java"),
-                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest12.java"),
-
-
+                ("./test_suites/" + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "/RegressionTest0.java"),
+                ("./test_suites/" + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "/RegressionTest1.java"),
+                ("./test_suites/" + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "/RegressionTest2.java"),
+                ("./test_suites/" + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "/RegressionTest3.java"),
+                ("./test_suites/" + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "/RegressionTest4.java"),
+                ("./test_suites/" + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "/RegressionTest5.java"),
+                ("./test_suites/" + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "/RegressionTest6.java"),
+                ("./test_suites/" + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "/RegressionTest7.java"),
+                ("./test_suites/" + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "/RegressionTest8.java"),
+                ("./test_suites/" + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "/RegressionTest9.java"),
+                ("./test_suites/" + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "/RegressionTest10.java"),
+                ("./test_suites/" + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "/RegressionTest11.java"),
+                ("./test_suites/" + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "/RegressionTest12.java"),
         };
 
 
