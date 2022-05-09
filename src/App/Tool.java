@@ -67,7 +67,7 @@ public class Tool {
             }
 
 
-
+        //TODO: Finish This
         fileInputOuter:
         while(true) {
             // Number of files to read in
@@ -82,7 +82,7 @@ public class Tool {
                     System.out.println(ConsoleColors.RED + "Something went wrong. Please input an integer." + ConsoleColors.RESET);
                 }
             }
-            
+
             // Path of files.
             while(true){
 
