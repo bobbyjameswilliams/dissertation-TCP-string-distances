@@ -5,6 +5,8 @@ import java.util.*;
 import java.time.*;
 
 import App.Models.TestCase;
+import App.SuiteInfo.CliInfo;
+import App.SuiteInfo.JacksonCoreInfo;
 import App.TCP.DistanceMethods.DistanceProxy;
 import App.Utilities.ConsoleColors;
 import App.Utilities.Utils;
@@ -32,14 +34,37 @@ public class Tool {
 //        String stringDistanceMethod = args[4].toUpperCase();
 
         System.out.println("Reading File...");
+//        String[] fileNames = {
+//                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest0.java"),
+//                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest1.java"),
+//                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest2.java"),
+//                ("./test_suites/" + CliInfo.getRootName() + CliInfo.getFileStructure() + "RegressionTest3.java"),
+//        };
+
         String[] fileNames = {
-                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest0.java",
-                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest1.java",
-                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest2.java",
-                "./test_suites/600 second budget/Cli/randoop/10/Cli-1b-randoop.10/org/apache/commons/cli/RegressionTest3.java"
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest0.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest1.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest2.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest3.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest4.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest5.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest6.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest7.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest8.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest9.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest10.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest11.java"),
+                ("./test_suites/" + JacksonCoreInfo.getRootName() + JacksonCoreInfo.getFileStructure() + "/RegressionTest12.java"),
+
+
         };
 
-        Boolean random = false;
+
+        Boolean random = true;
+        //True for ledru, false for avg
+        Boolean ledru = true;
+        //True for hamming, false for NCD
+        Boolean hamming = true;
 
         //TODO: tidy this up its horrendous.
         if (random){
@@ -74,7 +99,7 @@ public class Tool {
             long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
             System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
 
-            Utils.outputResultsToCSV(prioritisedTestSuite, "CLI600_All_AVG_Hamming");
+            Utils.outputResultsToCSV(prioritisedTestSuite, "Chart-1b-600-ledru-ham");
         }
         else{
             //## Read Test Suite
@@ -94,7 +119,7 @@ public class Tool {
 
             //## Generate Similarity Matrix ##
             long startTimeSimilarityMatrix = System.nanoTime();
-            Method distanceMethodToPass = DistanceProxy.class.getMethod("NCDistance", String.class, String.class);
+            Method distanceMethodToPass = DistanceProxy.class.getMethod("hammingDistance", String.class, String.class);
             ArrayList<ArrayList<Double>> similarityMatrix = createSimilarityMatrix(new Tool(), parsedFile, distanceMethodToPass);
             long endTimeSimilarityMatrix = System.nanoTime();
             long totalSimilarityMatrixTime = (endTimeSimilarityMatrix -  startTimeSimilarityMatrix) / 1000000  ;
@@ -102,22 +127,39 @@ public class Tool {
 
             //## Generate Priority Ordering ##
             long startTimePriorityOrdering = System.nanoTime();
-            //Set<Integer> priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
-            Set<Integer> priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
-            Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
+
+            //Set<Integer> priorityOrder;
+
+            Set<Integer> ledPriorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
+
+
+            //Set<Integer> avgPriorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
+
+
+            Map<Integer, TestCase> ledPrioritisedTestSuite = orderingToSuite(ledPriorityOrder, parsedFile);
+           // Map<Integer, TestCase> avgPrioritisedTestSuite = orderingToSuite(avgPriorityOrder, parsedFile);
+
             long endTimePriorityOrdering = System.nanoTime();
             long totalPriorityOrderingTime = (endTimePriorityOrdering -  startTimePriorityOrdering) / 1000000  ;
             System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalPriorityOrderingTime + "ms" + ConsoleColors.RESET);
 
-            //## Reconstruct Test Suite ##
+            //## Reconstruct Test Suite led ##
             long startTimeReconstruction = System.nanoTime();
-            List<String> x = reconstruct(prioritisedTestSuite, 500);
+            List<String> x = reconstruct(ledPrioritisedTestSuite, 500);
             saveTestFiles(x);
             long endTimeReconstruction = System.nanoTime();
             long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
             System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
 
-            Utils.outputResultsToCSV(prioritisedTestSuite, "CLI600_All_AVG_Hamming");
+//            //## Reconstruct Test Suite avg ##
+//            long startTimeReconstruction1 = System.nanoTime();
+//            List<String> y = reconstruct(avgPrioritisedTestSuite, 500);
+//            saveTestFiles2(y);
+//            long endTimeReconstruction1 = System.nanoTime();
+//            long totalReconstructionTime1 = (endTimeReconstruction1 -  startTimeReconstruction1) / 1000000  ;
+//            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime1 + "ms" + ConsoleColors.RESET);
+
+            Utils.outputResultsToCSV(ledPrioritisedTestSuite, "CLI600_All_AVG_Hamming");
         }
     }
 
