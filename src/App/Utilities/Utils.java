@@ -21,14 +21,16 @@ public class Utils {
                 fileLines.add(data);
             }
             myReader.close();
+            return fileLines;
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            //System.out.println("An error occurred.");
+            //e.printStackTrace();
+            return null;
         }
-        return fileLines;
+
     }
 
-    public static ArrayList<List<String>> readFiles (String[] fileNames){
+    public static ArrayList<List<String>> readFiles (List<String> fileNames){
         ArrayList<List<String>> filesLines = new ArrayList<>();
         for (String fileName : fileNames){
             List<String> fileLines = readFile(fileName);

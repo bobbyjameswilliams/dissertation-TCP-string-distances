@@ -38,8 +38,8 @@ class UtilsTest {
      */
     @Test
     void testReadFilesCorrectLineCount(){
-
-        String[] files = {testReadFilePath,testReadFilePath1};
+        String[] stringArrFiles = {testReadFilePath,testReadFilePath1};
+        List<String> files = Arrays.asList(stringArrFiles);
         ArrayList<List<String>> results = Utils.readFiles(files);
         int actualResult = 0;
         Integer expectedResult = testReadFileLineCount + testReadFileLineCount;
