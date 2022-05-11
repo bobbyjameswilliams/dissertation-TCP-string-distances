@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 
 import static App.Evaluation.Reconstruct.*;
 import static App.TCP.PrioritisationMethods.LedruFitness.ledruFitnessFunctionPrioritisation;
+import static App.TCP.PrioritisationMethods.WilliamsAverage.averageMethodPrioritisation;
 import static App.Utilities.Utils.printProgress;
 
 public class Tool {
@@ -29,8 +30,7 @@ public class Tool {
     }
     enum PrioritisationMethod{
         LEDRU,
-        AVG,
-        RANDOM
+        AVG
     }
     public static void main(String[] args) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Scanner scanner = new Scanner(System.in);
@@ -93,9 +93,8 @@ public class Tool {
                         ConsoleColors.RESET);
                 filePath = fileScanner.nextLine();
                 List<String> fileNames = generateFileNames(numOfFiles, filePath, subjectProgram);
-                System.out.println(filePath);
                 files = Utils.readFiles(fileNames);
-                if (files.get(0) != null) {
+                if (!files.contains(null)) {
                     break fileInputOuter;
                 }
                 System.out.println(ConsoleColors.RED + "Something went wrong. Check file path and number of files to read." + ConsoleColors.RESET);
@@ -146,127 +145,69 @@ public class Tool {
             System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
 
             Utils.outputResultsToCSV(prioritisedTestSuite, (subjectProgram.name() + "_random"));
-        } else {
-            //Take input for string distance
-            Scanner stringDistanceScanner = new Scanner(System.in);
-            System.out.println("What string distance method would you like to use?");
-            while (true) {
-                System.out.println("Options:");
-                for (StringDistance item : StringDistance.values()) {
-                    System.out.print(ConsoleColors.PURPLE + item + " " + ConsoleColors.RESET);
-                }
-                try {
-                    String distanceMethodFromUser = stringDistanceScanner.nextLine().toUpperCase();
-                    if (EnumUtils.isValidEnum(StringDistance.class, distanceMethodFromUser)) {
-                        distanceMethod = StringDistance.valueOf(distanceMethodFromUser);
-                        break;
-                    } else {
-                        System.out.println(ConsoleColors.RED + "Incorrect entry. Please try again." + ConsoleColors.RESET);
-                    }
-                } catch (Exception e) {
-                    System.out.println(ConsoleColors.RED + "Something went wrong. Please try again." + ConsoleColors.RESET);
-                    stringDistanceScanner.next();
-                }
-            }
         }
+        else {
+            //Get string distance selection from user
+            distanceMethod = chooseStringDistance();
+
+            //Get prioritisation method from user
+            prioritisationMethod = choosePrioritisationMethod();
+
+            //## Parse Loaded File
+            long startTimeFileParse = System.nanoTime();
+            Map<Integer, TestCase> parsedFile = Utils.parseTests(files);
+            long endTimeFileParse = System.nanoTime();
+            long totalFileParseTime = (endTimeFileParse -  startTimeFileParse) / 1000000  ;
+            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalFileParseTime + "ms" + ConsoleColors.RESET);
 
 
+            //## Generate Similarity Matrix ##
+            long startTimeSimilarityMatrix = System.nanoTime();
 
-        //TODO: tidy this up its horrendous.
-//        if (random){
-//
-//            //## Read Test Suite
-////            long startTimeFileRead = System.nanoTime();
-////            ArrayList<List<String>> files = Utils.readFiles(fileNames);
-////            long endTimeFileRead = System.nanoTime();
-////            long totalFileReadTime = (endTimeFileRead -  startTimeFileRead) / 1000000  ;
-////            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND + "Completed in " + totalFileReadTime + "ms" + ConsoleColors.RESET);
-//
-//            //## Parse Loaded File
-//            long startTimeFileParse = System.nanoTime();
-//            Map<Integer, TestCase> parsedFile = Utils.parseTests(files);
-//            long endTimeFileParse = System.nanoTime();
-//            long totalFileParseTime = (endTimeFileParse -  startTimeFileParse) / 1000000  ;
-//            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalFileParseTime + "ms" + ConsoleColors.RESET);
-//
-//            //## Generate Priority Ordering ##
-//            long startTimePriorityOrdering = System.nanoTime();
-//            Set<Integer> priorityOrder = generateRandomOrdering(parsedFile);
-//            Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
-//            long endTimePriorityOrdering = System.nanoTime();
-//            long totalPriorityOrderingTime = (endTimePriorityOrdering -  startTimePriorityOrdering) / 1000000  ;
-//            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalPriorityOrderingTime + "ms" + ConsoleColors.RESET);
-//
-//            //## Reconstruct Test Suite ##
-//            long startTimeReconstruction = System.nanoTime();
-//            List<String> x = reconstruct(prioritisedTestSuite, 500);
-//            saveTestFiles(x);
-//            long endTimeReconstruction = System.nanoTime();
-//            long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
-//            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
-//
-//            Utils.outputResultsToCSV(prioritisedTestSuite, "Chart-1b-600-ledru-ham");
-//        }
-//        else{
-////            //## Read Test Suite
-////            long startTimeFileRead = System.nanoTime();
-////            ArrayList<List<String>> files = Utils.readFiles(fileNames);
-////            long endTimeFileRead = System.nanoTime();
-////            long totalFileReadTime = (endTimeFileRead -  startTimeFileRead) / 1000000  ;
-////            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND + "Completed in " + totalFileReadTime + "ms" + ConsoleColors.RESET);
-//
-//            //## Parse Loaded File
-//            long startTimeFileParse = System.nanoTime();
-//            Map<Integer, TestCase> parsedFile = Utils.parseTests(files);
-//            long endTimeFileParse = System.nanoTime();
-//            long totalFileParseTime = (endTimeFileParse -  startTimeFileParse) / 1000000  ;
-//            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalFileParseTime + "ms" + ConsoleColors.RESET);
-//
-//
-//            //## Generate Similarity Matrix ##
-//            long startTimeSimilarityMatrix = System.nanoTime();
-//            Method distanceMethodToPass = DistanceProxy.class.getMethod("hammingDistance", String.class, String.class);
-//            ArrayList<ArrayList<Double>> similarityMatrix = createSimilarityMatrix(new Tool(), parsedFile, distanceMethodToPass);
-//            long endTimeSimilarityMatrix = System.nanoTime();
-//            long totalSimilarityMatrixTime = (endTimeSimilarityMatrix -  startTimeSimilarityMatrix) / 1000000  ;
-//            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalSimilarityMatrixTime + "ms" + ConsoleColors.RESET);
-//
-//            //## Generate Priority Ordering ##
-//            long startTimePriorityOrdering = System.nanoTime();
-//
-//            //Set<Integer> priorityOrder;
-//
-//            Set<Integer> ledPriorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
-//
-//
-//            //Set<Integer> avgPriorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
-//
-//
-//            Map<Integer, TestCase> ledPrioritisedTestSuite = orderingToSuite(ledPriorityOrder, parsedFile);
-//           // Map<Integer, TestCase> avgPrioritisedTestSuite = orderingToSuite(avgPriorityOrder, parsedFile);
-//
-//            long endTimePriorityOrdering = System.nanoTime();
-//            long totalPriorityOrderingTime = (endTimePriorityOrdering -  startTimePriorityOrdering) / 1000000  ;
-//            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalPriorityOrderingTime + "ms" + ConsoleColors.RESET);
-//
-//            //## Reconstruct Test Suite led ##
-//            long startTimeReconstruction = System.nanoTime();
-//            List<String> x = reconstruct(ledPrioritisedTestSuite, 500);
-//            saveTestFiles(x);
-//            long endTimeReconstruction = System.nanoTime();
-//            long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
-//            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
-//
-////            //## Reconstruct Test Suite avg ##
-////            long startTimeReconstruction1 = System.nanoTime();
-////            List<String> y = reconstruct(avgPrioritisedTestSuite, 500);
-////            saveTestFiles2(y);
-////            long endTimeReconstruction1 = System.nanoTime();
-////            long totalReconstructionTime1 = (endTimeReconstruction1 -  startTimeReconstruction1) / 1000000  ;
-////            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime1 + "ms" + ConsoleColors.RESET);
-//
-//            Utils.outputResultsToCSV(ledPrioritisedTestSuite, "CLI600_All_AVG_Hamming");
-//        }
+            ArrayList<ArrayList<Double>> similarityMatrix = null;
+            if (distanceMethod.equals(StringDistance.HAMMING)){
+                Method distanceMethodToPass = DistanceProxy.class.getMethod("hammingDistance", String.class, String.class);
+                similarityMatrix = createSimilarityMatrix(new Tool(), parsedFile, distanceMethodToPass);
+            }
+            else if (distanceMethod.equals(StringDistance.NCD)){
+                Method distanceMethodToPass = DistanceProxy.class.getMethod("NCDistance", String.class, String.class);
+                similarityMatrix = createSimilarityMatrix(new Tool(), parsedFile, distanceMethodToPass);
+            }
+
+            long endTimeSimilarityMatrix = System.nanoTime();
+            long totalSimilarityMatrixTime = (endTimeSimilarityMatrix -  startTimeSimilarityMatrix) / 1000000  ;
+            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalSimilarityMatrixTime + "ms" + ConsoleColors.RESET);
+
+
+            //## Generate Priority Ordering ##
+            long startTimePriorityOrdering = System.nanoTime();
+            //Set<Integer> priorityOrder;
+            Set<Integer> priorityOrder = null;
+
+            if(prioritisationMethod.equals(PrioritisationMethod.AVG)){
+                priorityOrder = averageMethodPrioritisation(similarityMatrix, parsedFile);
+            }
+            else if (prioritisationMethod.equals(PrioritisationMethod.LEDRU)){
+                priorityOrder = ledruFitnessFunctionPrioritisation(similarityMatrix);
+            }
+            Map<Integer, TestCase> prioritisedTestSuite = orderingToSuite(priorityOrder, parsedFile);
+
+            long endTimePriorityOrdering = System.nanoTime();
+            long totalPriorityOrderingTime = (endTimePriorityOrdering -  startTimePriorityOrdering) / 1000000  ;
+            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalPriorityOrderingTime + "ms" + ConsoleColors.RESET);
+
+            //## Reconstruct Test Suite led ##
+            long startTimeReconstruction = System.nanoTime();
+            //500 is the default number of tests per file
+            List<String> x = reconstruct(prioritisedTestSuite, 500);
+            saveTestFiles(x);
+            long endTimeReconstruction = System.nanoTime();
+            long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
+            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
+
+            Utils.outputResultsToCSV(prioritisedTestSuite, (distanceMethod.name()+"_"+prioritisationMethod.name()));
+
+        }
     }
 
 
@@ -351,6 +292,62 @@ public class Tool {
             }
         }
         return fileNames;
+    }
+
+    private static TestSubject chooseTestSubject(){
+        return null;
+    }
+
+    private static StringDistance chooseStringDistance(){
+        System.out.println("What string distance method would you like to use?");
+
+        Scanner scanner = new Scanner(System.in);
+        StringDistance stringDistance;
+        while (true) {
+            System.out.println("Options:");
+            for (StringDistance item : StringDistance.values()) {
+                System.out.print(ConsoleColors.PURPLE + item + " " + ConsoleColors.RESET);
+            }
+            try {
+                String selectionFromUser = scanner.nextLine().toUpperCase();
+                if (EnumUtils.isValidEnum(StringDistance.class, selectionFromUser)) {
+                    stringDistance = StringDistance.valueOf(selectionFromUser);
+                    break;
+                } else {
+                    System.out.println(ConsoleColors.RED + "Incorrect entry. Please try again." + ConsoleColors.RESET);
+                }
+            } catch (Exception e) {
+                System.out.println(ConsoleColors.RED + "Something went wrong. Please try again." + ConsoleColors.RESET);
+                scanner.next();
+            }
+        }
+        return stringDistance;
+    }
+
+    private static PrioritisationMethod choosePrioritisationMethod(){
+        System.out.println("What string distance method would you like to use?");
+
+        Scanner scanner = new Scanner(System.in);
+        PrioritisationMethod prioritisationMethod;
+        while (true) {
+            System.out.println("Options:");
+            for (PrioritisationMethod item : PrioritisationMethod.values()) {
+                System.out.print(ConsoleColors.PURPLE + item + " " + ConsoleColors.RESET);
+            }
+            try {
+                String selectionFromUser = scanner.nextLine().toUpperCase();
+                if (EnumUtils.isValidEnum(PrioritisationMethod.class, selectionFromUser)) {
+                    prioritisationMethod = PrioritisationMethod.valueOf(selectionFromUser);
+                    break;
+                } else {
+                    System.out.println(ConsoleColors.RED + "Incorrect entry. Please try again." + ConsoleColors.RESET);
+                }
+            } catch (Exception e) {
+                System.out.println(ConsoleColors.RED + "Something went wrong. Please try again." + ConsoleColors.RESET);
+                scanner.next();
+            }
+        }
+        return prioritisationMethod;
     }
 
 
