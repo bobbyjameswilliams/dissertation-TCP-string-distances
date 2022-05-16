@@ -15,7 +15,7 @@ public class Reconstruct {
         return null;
     }
 
-    public static List<String> reconstruct(Map<Integer, TestCase> suite, int testsPerFile) {
+    public static List<String> reconstructChart(Map<Integer, TestCase> suite, int testsPerFile) {
 
         int classNum = 0;
         int suiteSize = suite.size();
@@ -27,14 +27,38 @@ public class Reconstruct {
             TestCase testObject = testCase.getValue();
             apportionedSuite.put(testCase.getKey(), testObject);
             if ((testObject.getOrder() + 1) % testsPerFile == 0){
-                String classDef = generateClassDefinitionJacksonCore(classNum);
+                String classDef = generateClassDefinitionChart(classNum);
                 classNum += 1;
                 files.add(generateFile(apportionedSuite, classDef, suiteSize));
                 apportionedSuite.clear();
             }
         }
         //Above code zips only when multiple of 500. This does the rest.
-        String classDef = generateClassDefinitionJacksonCore(classNum);
+        String classDef = generateClassDefinitionChart(classNum);
+        files.add(generateFile(apportionedSuite, classDef, suiteSize));
+        return files;
+    }
+
+    public static List<String> reconstructCli(Map<Integer, TestCase> suite, int testsPerFile) {
+
+        int classNum = 0;
+        int suiteSize = suite.size();
+        List<String> files = new ArrayList<>();
+        Map<Integer, TestCase> apportionedSuite = new LinkedHashMap<>();
+        for (Map.Entry<Integer, TestCase> testCase : suite.entrySet()) {
+
+
+            TestCase testObject = testCase.getValue();
+            apportionedSuite.put(testCase.getKey(), testObject);
+            if ((testObject.getOrder() + 1) % testsPerFile == 0){
+                String classDef = generateClassDefinitionCli(classNum);
+                classNum += 1;
+                files.add(generateFile(apportionedSuite, classDef, suiteSize));
+                apportionedSuite.clear();
+            }
+        }
+        //Above code zips only when multiple of 500. This does the rest.
+        String classDef = generateClassDefinitionCli(classNum);
         files.add(generateFile(apportionedSuite, classDef, suiteSize));
         return files;
     }
@@ -80,7 +104,7 @@ public class Reconstruct {
      * @param version
      * @return
      */
-    public static String generateClassDefintionCli(int version){
+    public static String generateClassDefinitionCli(int version){
         String className = "RegressionTest" + version;
         final String header = "package org.apache.commons.cli;\n\n"
                 + "import org.junit.FixMethodOrder;\n"
@@ -92,9 +116,9 @@ public class Reconstruct {
         return header;
     }
 
-    public static String generateClassDefinitionJacksonCore(int version){
+    public static String generateClassDefinitionChart(int version){
         String className = "RegressionTest" + version;
-        final String header = "package org.jfree.chart.renderer.category;;\n\n"
+        final String header = "package org.jfree.chart.renderer.category;\n\n"
                 + "import org.junit.FixMethodOrder;\n"
                 + "import org.junit.Test;\n"
                 + "import org.junit.runners.MethodSorters;\n\n"
@@ -104,8 +128,8 @@ public class Reconstruct {
         return header;
     }
 
-    public static void saveTestFiles(List<String> files) throws FileNotFoundException {
-        String headerFile = generateHeaderFileJacksonCore(files.size());
+    public static void saveTestFilesChart(List<String> files) throws FileNotFoundException {
+        String headerFile = generateHeaderFileChart(files.size());
         String directory = "./ExportedTestSuites/";
         String headerFilePath = directory + "RegressionTest.java";
         Utils.printSaveString(headerFilePath, headerFile);
@@ -119,16 +143,16 @@ public class Reconstruct {
         }
     }
 
-    public static void saveTestFiles2(List<String> files) throws FileNotFoundException {
-        String headerFile = generateHeaderFileJacksonCore(files.size());
+    public static void saveTestFilesCli(List<String> files) throws FileNotFoundException {
+        String headerFile = generateHeaderFileCli(files.size());
         String directory = "./ExportedTestSuites/";
-        String headerFilePath = directory + "ARegressionTest.java";
+        String headerFilePath = directory + "RegressionTest.java";
         Utils.printSaveString(headerFilePath, headerFile);
         //Output to console
         System.out.println(ConsoleColors.BLACK + ConsoleColors.YELLOW_BACKGROUND + "Saving generated test suite to " + directory + ConsoleColors.RESET);
 
         for (int i = 0; i < files.size(); i++){
-            String fileName = "ARegressionTest" + (i) + ".java";
+            String fileName = "RegressionTest" + (i) + ".java";
             String filePath = directory + fileName;
             Utils.printSaveString(filePath, files.get(i));
         }
@@ -157,7 +181,7 @@ public class Reconstruct {
         return headerFileContent;
     }
 
-    public static String generateHeaderFileJacksonCore(int fileCount){
+    public static String generateHeaderFileChart(int fileCount){
 
         StringBuilder parameters = new StringBuilder();
         for (int i = 0; i < fileCount; i++){

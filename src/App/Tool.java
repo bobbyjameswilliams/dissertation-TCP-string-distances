@@ -137,12 +137,24 @@ public class Tool {
             System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalPriorityOrderingTime + "ms" + ConsoleColors.RESET);
 
             //## Reconstruct Test Suite ##
-            long startTimeReconstruction = System.nanoTime();
-            List<String> x = reconstruct(prioritisedTestSuite, 500);
-            saveTestFiles(x);
-            long endTimeReconstruction = System.nanoTime();
-            long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
-            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
+            if(subjectProgram.equals(TestSubject.CLI)){
+                long startTimeReconstruction = System.nanoTime();
+                //500 is the default number of tests per file
+                List<String> x = reconstructCli(prioritisedTestSuite, 500);
+                saveTestFilesCli(x);
+                long endTimeReconstruction = System.nanoTime();
+                long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
+                System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
+            }
+            else if(subjectProgram.equals(TestSubject.CHART)){
+                long startTimeReconstruction = System.nanoTime();
+                //500 is the default number of tests per file
+                List<String> x = reconstructChart(prioritisedTestSuite, 500);
+                saveTestFilesChart(x);
+                long endTimeReconstruction = System.nanoTime();
+                long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
+                System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
+            }
 
             Utils.outputResultsToCSV(prioritisedTestSuite, (subjectProgram.name() + "_random"));
         }
@@ -196,14 +208,27 @@ public class Tool {
             long totalPriorityOrderingTime = (endTimePriorityOrdering -  startTimePriorityOrdering) / 1000000  ;
             System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalPriorityOrderingTime + "ms" + ConsoleColors.RESET);
 
-            //## Reconstruct Test Suite led ##
-            long startTimeReconstruction = System.nanoTime();
-            //500 is the default number of tests per file
-            List<String> x = reconstruct(prioritisedTestSuite, 500);
-            saveTestFiles(x);
-            long endTimeReconstruction = System.nanoTime();
-            long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
-            System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
+            //## Reconstruct Test Suite ##
+            if(subjectProgram.equals(TestSubject.CLI)){
+                long startTimeReconstruction = System.nanoTime();
+                //500 is the default number of tests per file
+                List<String> x = reconstructCli(prioritisedTestSuite, 500);
+                saveTestFilesCli(x);
+                long endTimeReconstruction = System.nanoTime();
+                long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
+                System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
+            }
+            else if(subjectProgram.equals(TestSubject.CHART)){
+                long startTimeReconstruction = System.nanoTime();
+                //500 is the default number of tests per file
+                List<String> x = reconstructChart(prioritisedTestSuite, 500);
+                saveTestFilesChart(x);
+                long endTimeReconstruction = System.nanoTime();
+                long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
+                System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
+            }
+
+
 
             Utils.outputResultsToCSV(prioritisedTestSuite, (distanceMethod.name()+"_"+prioritisationMethod.name()));
 
