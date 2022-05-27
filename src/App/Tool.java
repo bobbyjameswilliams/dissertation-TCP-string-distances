@@ -6,6 +6,7 @@ import java.util.*;
 import App.Models.TestCase;
 import App.SuiteInfo.ChartInfo;
 import App.SuiteInfo.CliInfo;
+import App.SuiteInfo.MathInfo;
 import App.TCP.DistanceMethods.DistanceProxy;
 import App.Utilities.ConsoleColors;
 import App.Utilities.Utils;
@@ -23,6 +24,7 @@ public class Tool {
     enum TestSubject {
         CLI,
         CHART,
+        MATH
     }
     enum StringDistance{
         HAMMING,
@@ -155,6 +157,15 @@ public class Tool {
                 long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
                 System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
             }
+            else if(subjectProgram.equals(TestSubject.MATH)){
+                long startTimeReconstruction = System.nanoTime();
+                //500 is the default number of tests per file
+                List<String> x = reconstructMath(prioritisedTestSuite, 500);
+                saveTestFilesMath(x);
+                long endTimeReconstruction = System.nanoTime();
+                long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
+                System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
+            }
 
             Utils.outputResultsToCSV(prioritisedTestSuite, (subjectProgram.name() + "_random"));
         }
@@ -227,10 +238,19 @@ public class Tool {
                 long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
                 System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
             }
+            else if(subjectProgram.equals(TestSubject.MATH)){
+                long startTimeReconstruction = System.nanoTime();
+                //500 is the default number of tests per file
+                List<String> x = reconstructMath(prioritisedTestSuite, 500);
+                saveTestFilesMath(x);
+                long endTimeReconstruction = System.nanoTime();
+                long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
+                System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
+            }
 
 
 
-            Utils.outputResultsToCSV(prioritisedTestSuite, (distanceMethod.name()+"_"+prioritisationMethod.name()));
+            Utils.outputResultsToCSV(prioritisedTestSuite, (subjectProgram.name()+"_"+distanceMethod.name()+"_"+prioritisationMethod.name()));
 
         }
     }
@@ -314,6 +334,11 @@ public class Tool {
         else if (program == TestSubject.CHART){
             for (int i = 0; i < numOfFiles; i++){
                 fileNames.add(filePath + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "RegressionTest" + i + ".java");
+            }
+        }
+        else if (program == TestSubject.MATH){
+            for (int i = 0; i < numOfFiles; i++){
+                fileNames.add(filePath + MathInfo.getRootName() + MathInfo.getFileStructure() + "RegressionTest" + i + ".java");
             }
         }
         return fileNames;

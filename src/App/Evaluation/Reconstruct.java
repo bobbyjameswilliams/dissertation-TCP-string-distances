@@ -63,6 +63,30 @@ public class Reconstruct {
         return files;
     }
 
+    public static List<String> reconstructMath(Map<Integer, TestCase> suite, int testsPerFile) {
+
+        int classNum = 0;
+        int suiteSize = suite.size();
+        List<String> files = new ArrayList<>();
+        Map<Integer, TestCase> apportionedSuite = new LinkedHashMap<>();
+        for (Map.Entry<Integer, TestCase> testCase : suite.entrySet()) {
+
+
+            TestCase testObject = testCase.getValue();
+            apportionedSuite.put(testCase.getKey(), testObject);
+            if ((testObject.getOrder() + 1) % testsPerFile == 0){
+                String classDef = generateClassDefinitionMath(classNum);
+                classNum += 1;
+                files.add(generateFile(apportionedSuite, classDef, suiteSize));
+                apportionedSuite.clear();
+            }
+        }
+        //Above code zips only when multiple of 500. This does the rest.
+        String classDef = generateClassDefinitionMath(classNum);
+        files.add(generateFile(apportionedSuite, classDef, suiteSize));
+        return files;
+    }
+
     public static String generateFile(Map<Integer, TestCase> data,
                                     String header, int suiteSize) {
         StringBuilder document = new StringBuilder();
@@ -116,48 +140,6 @@ public class Reconstruct {
         return header;
     }
 
-    public static String generateClassDefinitionChart(int version){
-        String className = "RegressionTest" + version;
-        final String header = "package org.jfree.chart.renderer.category;\n\n"
-                + "import org.junit.FixMethodOrder;\n"
-                + "import org.junit.Test;\n"
-                + "import org.junit.runners.MethodSorters;\n\n"
-                + "@FixMethodOrder(MethodSorters.NAME_ASCENDING)\n"
-                + "public class " + className + " {\n\n"
-                + "    public static boolean debug = false;\n";
-        return header;
-    }
-
-    public static void saveTestFilesChart(List<String> files) throws FileNotFoundException {
-        String headerFile = generateHeaderFileChart(files.size());
-        String directory = "./ExportedTestSuites/";
-        String headerFilePath = directory + "RegressionTest.java";
-        Utils.printSaveString(headerFilePath, headerFile);
-        //Output to console
-        System.out.println(ConsoleColors.BLACK + ConsoleColors.YELLOW_BACKGROUND + "Saving generated test suite to " + directory + ConsoleColors.RESET);
-
-        for (int i = 0; i < files.size(); i++){
-            String fileName = "RegressionTest" + (i) + ".java";
-            String filePath = directory + fileName;
-            Utils.printSaveString(filePath, files.get(i));
-        }
-    }
-
-    public static void saveTestFilesCli(List<String> files) throws FileNotFoundException {
-        String headerFile = generateHeaderFileCli(files.size());
-        String directory = "./ExportedTestSuites/";
-        String headerFilePath = directory + "RegressionTest.java";
-        Utils.printSaveString(headerFilePath, headerFile);
-        //Output to console
-        System.out.println(ConsoleColors.BLACK + ConsoleColors.YELLOW_BACKGROUND + "Saving generated test suite to " + directory + ConsoleColors.RESET);
-
-        for (int i = 0; i < files.size(); i++){
-            String fileName = "RegressionTest" + (i) + ".java";
-            String filePath = directory + fileName;
-            Utils.printSaveString(filePath, files.get(i));
-        }
-    }
-
     public static String generateHeaderFileCli(int fileCount){
 
         StringBuilder parameters = new StringBuilder();
@@ -179,6 +161,35 @@ public class Reconstruct {
                 + "public class RegressionTest {\n"
                 + "}\n\n";
         return headerFileContent;
+    }
+
+    public static void saveTestFilesCli(List<String> files) throws FileNotFoundException {
+        String headerFile = generateHeaderFileCli(files.size());
+        String directory = "./ExportedTestSuites/";
+        String headerFilePath = directory + "RegressionTest.java";
+        Utils.printSaveString(headerFilePath, headerFile);
+        //Output to console
+        System.out.println(ConsoleColors.BLACK + ConsoleColors.YELLOW_BACKGROUND + "Saving generated test suite to " + directory + ConsoleColors.RESET);
+
+        for (int i = 0; i < files.size(); i++){
+            String fileName = "RegressionTest" + (i) + ".java";
+            String filePath = directory + fileName;
+            Utils.printSaveString(filePath, files.get(i));
+        }
+    }
+
+    // ########## CHART ####################
+
+    public static String generateClassDefinitionChart(int version){
+        String className = "RegressionTest" + version;
+        final String header = "package org.jfree.chart.renderer.category;\n\n"
+                + "import org.junit.FixMethodOrder;\n"
+                + "import org.junit.Test;\n"
+                + "import org.junit.runners.MethodSorters;\n\n"
+                + "@FixMethodOrder(MethodSorters.NAME_ASCENDING)\n"
+                + "public class " + className + " {\n\n"
+                + "    public static boolean debug = false;\n";
+        return header;
     }
 
     public static String generateHeaderFileChart(int fileCount){
@@ -204,4 +215,69 @@ public class Reconstruct {
         return headerFileContent;
     }
 
+    public static void saveTestFilesChart(List<String> files) throws FileNotFoundException {
+        String headerFile = generateHeaderFileChart(files.size());
+        String directory = "./ExportedTestSuites/";
+        String headerFilePath = directory + "RegressionTest.java";
+        Utils.printSaveString(headerFilePath, headerFile);
+        //Output to console
+        System.out.println(ConsoleColors.BLACK + ConsoleColors.YELLOW_BACKGROUND + "Saving generated test suite to " + directory + ConsoleColors.RESET);
+
+        for (int i = 0; i < files.size(); i++){
+            String fileName = "RegressionTest" + (i) + ".java";
+            String filePath = directory + fileName;
+            Utils.printSaveString(filePath, files.get(i));
+        }
+    }
+
+    // ########### MATH #######################
+    public static String generateClassDefinitionMath(int version){
+        String className = "RegressionTest" + version;
+        final String header = "package org.apache.commons.math3.fraction;;\n\n"
+                + "import org.junit.FixMethodOrder;\n"
+                + "import org.junit.Test;\n"
+                + "import org.junit.runners.MethodSorters;\n\n"
+                + "@FixMethodOrder(MethodSorters.NAME_ASCENDING)\n"
+                + "public class " + className + " {\n\n"
+                + "    public static boolean debug = false;\n";
+        return header;
+    }
+
+    public static String generateHeaderFileMath(int fileCount){
+
+        StringBuilder parameters = new StringBuilder();
+        for (int i = 0; i < fileCount; i++){
+            String stringToAdd = "";
+            if (i != fileCount - 1) {
+                parameters.append("RegressionTest").append(i).append(".class, ");
+            }
+            else {
+                parameters.append("RegressionTest").append(i).append(".class");
+            }
+        }
+
+        final String headerFileContent = "package org.apache.commons.math3.fraction;\n\n"
+                + "import org.junit.runner.RunWith;\n"
+                + "import org.junit.runners.Suite;\n\n"
+                + "@RunWith(Suite.class)\n"
+                + "@Suite.SuiteClasses({ " + parameters + " })\n"
+                + "public class RegressionTest {\n"
+                + "}\n\n";
+        return headerFileContent;
+    }
+
+    public static void saveTestFilesMath(List<String> files) throws FileNotFoundException {
+        String headerFile = generateHeaderFileMath(files.size());
+        String directory = "./ExportedTestSuites/";
+        String headerFilePath = directory + "RegressionTest.java";
+        Utils.printSaveString(headerFilePath, headerFile);
+        //Output to console
+        System.out.println(ConsoleColors.BLACK + ConsoleColors.YELLOW_BACKGROUND + "Saving generated test suite to " + directory + ConsoleColors.RESET);
+
+        for (int i = 0; i < files.size(); i++){
+            String fileName = "RegressionTest" + (i) + ".java";
+            String filePath = directory + fileName;
+            Utils.printSaveString(filePath, files.get(i));
+        }
+    }
 }
