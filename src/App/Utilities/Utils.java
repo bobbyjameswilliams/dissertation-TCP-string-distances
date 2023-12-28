@@ -14,6 +14,8 @@ public class Utils {
     public static List<String> readFile(String fileName){
         List<String> fileLines = new ArrayList<String>();
         try {
+            // TODO: Remove
+            System.out.println(fileName);
             File myObj = new File(fileName);
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {

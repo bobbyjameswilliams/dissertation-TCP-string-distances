@@ -1,12 +1,14 @@
 package App;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Time;
 import java.util.*;
 
 import App.Models.TestCase;
 import App.SuiteInfo.ChartInfo;
 import App.SuiteInfo.CliInfo;
 import App.SuiteInfo.MathInfo;
+import App.SuiteInfo.TimeInfo;
 import App.TCP.DistanceMethods.DistanceProxy;
 import App.Utilities.ConsoleColors;
 import App.Utilities.Utils;
@@ -336,9 +338,10 @@ public class Tool {
                 fileNames.add(filePath + ChartInfo.getRootName() + ChartInfo.getFileStructure() + "RegressionTest" + i + ".java");
             }
         }
+        //TODO: This is temporarily changed to time, change back to math!
         else if (program == TestSubject.MATH){
             for (int i = 0; i < numOfFiles; i++){
-                fileNames.add(filePath + MathInfo.getRootName() + MathInfo.getFileStructure() + "RegressionTest" + i + ".java");
+                fileNames.add(filePath + TimeInfo.getRootName() + TimeInfo.getFileStructure() + "RegressionTest" + i + ".java");
             }
         }
         return fileNames;
