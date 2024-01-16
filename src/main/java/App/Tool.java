@@ -37,6 +37,29 @@ public class Tool {
         AVG
     }
     public static void main(String[] args) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Scanner mainScanner = new Scanner(System.in);
+        System.out.println("TCP tool using string distances.");
+
+        // Pick if evaluate or order
+        while (true) {
+            System.out.println("\"Evaluate\" or \"Order\"");
+            String topMenuInput = mainScanner.nextLine();
+            if (topMenuInput.equalsIgnoreCase("evaluate")){
+                System.out.println("Evaluate");
+                break;
+            }
+            else if (topMenuInput.equalsIgnoreCase("order")){
+                orderSuite();
+                break;
+            }
+            else {
+                System.out.println("Incorrect Input.");
+            }
+        }
+    }
+
+    public static void orderSuite() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+
         Scanner scanner = new Scanner(System.in);
         //Config variables
         TestSubject subjectProgram;
@@ -45,29 +68,27 @@ public class Tool {
         int numOfFiles;
         boolean random = false;
 
-        System.out.println("TCP tool using string distances.");
-
         //User input for target program
         System.out.println("What is your target program?");
-            //Inner loop 1 for choosing number of files to read in.
-            while (true) {
-                System.out.println("Options:");
-                for (TestSubject item : TestSubject.values()) {
-                    System.out.print(ConsoleColors.PURPLE + item + " " + ConsoleColors.RESET);
-                }
-                try {
-                    String subjectProgramFromUser = scanner.nextLine().toUpperCase();
-                    if (EnumUtils.isValidEnum(TestSubject.class, subjectProgramFromUser)) {
-                        subjectProgram = TestSubject.valueOf(subjectProgramFromUser);
-                        break;
-                    } else {
-                        System.out.println(ConsoleColors.RED + "Incorrect entry. Please try again." + ConsoleColors.RESET);
-                    }
-                } catch (Exception e) {
-                    System.out.println(ConsoleColors.RED + "Something went wrong. Please try again." + ConsoleColors.RESET);
-                    scanner.next();
-                }
+        //Inner loop 1 for choosing number of files to read in.
+        while (true) {
+            System.out.println("Options:");
+            for (TestSubject item : TestSubject.values()) {
+                System.out.print(ConsoleColors.PURPLE + item + " " + ConsoleColors.RESET);
             }
+            try {
+                String subjectProgramFromUser = scanner.nextLine().toUpperCase();
+                if (EnumUtils.isValidEnum(TestSubject.class, subjectProgramFromUser)) {
+                    subjectProgram = TestSubject.valueOf(subjectProgramFromUser);
+                    break;
+                } else {
+                    System.out.println(ConsoleColors.RED + "Incorrect entry. Please try again." + ConsoleColors.RESET);
+                }
+            } catch (Exception e) {
+                System.out.println(ConsoleColors.RED + "Something went wrong. Please try again." + ConsoleColors.RESET);
+                scanner.next();
+            }
+        }
 
 
         //User input for files
@@ -257,6 +278,9 @@ public class Tool {
         }
     }
 
+    public static void evaluateSuite() {
+
+    }
 
     //############### FITNESS FUNCTIONS ######################
     //Polymorphic for double and int
