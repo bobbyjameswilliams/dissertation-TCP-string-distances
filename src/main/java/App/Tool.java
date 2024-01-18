@@ -45,7 +45,7 @@ public class Tool {
             System.out.println("\"Evaluate\" or \"Order\"");
             String topMenuInput = mainScanner.nextLine();
             if (topMenuInput.equalsIgnoreCase("evaluate")){
-                System.out.println("Evaluate");
+                evaluateSuite();
                 break;
             }
             else if (topMenuInput.equalsIgnoreCase("order")){
@@ -279,7 +279,12 @@ public class Tool {
     }
 
     public static void evaluateSuite() {
-
+        /**
+         * Evaluates and calculates APFD from a CSV file containing the faults and those detected by test case numbers.
+         * The ordering created during prioritisation is evaluated against the known faults detected and APFD can be
+         * calculated.
+         *
+         */
     }
 
     //############### FITNESS FUNCTIONS ######################
