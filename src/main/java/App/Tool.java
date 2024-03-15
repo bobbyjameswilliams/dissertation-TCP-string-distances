@@ -285,6 +285,10 @@ public class Tool {
          * calculated.
          *
          */
+
+        // Number of tests
+        // Number of faults
+        //
     }
 
     //############### FITNESS FUNCTIONS ######################
