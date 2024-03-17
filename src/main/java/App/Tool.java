@@ -364,10 +364,6 @@ public class Tool {
         return fileNames;
     }
 
-    private static TestSubject chooseTestSubject(){
-        return null;
-    }
-
     private static StringDistance chooseStringDistance(){
         System.out.println("What string distance method would you like to use?");
 
