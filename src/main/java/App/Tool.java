@@ -270,9 +270,6 @@ public class Tool {
                 long totalReconstructionTime = (endTimeReconstruction -  startTimeReconstruction) / 1000000  ;
                 System.out.println(ConsoleColors.BLACK + ConsoleColors.CYAN_BACKGROUND  + "Completed in " + totalReconstructionTime + "ms" + ConsoleColors.RESET);
             }
-
-
-
             Utils.outputResultsToCSV(prioritisedTestSuite, (subjectProgram.name()+"_"+distanceMethod.name()+"_"+prioritisationMethod.name()));
 
         }
@@ -353,10 +350,6 @@ public class Tool {
         Set<Integer> randomOrderSet = new LinkedHashSet<>(randomOrderList);
         assert randomOrderSet.size() == randomOrderList.size();
         return randomOrderSet;
-    }
-
-    private void evaluateTestSuite(){
-
     }
 
     private static List<String> generateFileNames(int numOfFiles, String filePath, TestSubject program){
